@@ -7,3 +7,20 @@ packer/.packer_cache/
 
 # Clé SSH par défaut générée par Packer — ne jamais committer
 packer/default_id_ed25519
+
+# Outils & éditeurs
+.claude/
+.vscode/
+/.idea/
+*.iml
+
+# Fichiers système
+.DS_Store
+debug.txt
+crash.log
+
+# Helm
+Chart.lock
+
+# Credentials
+auth_file.json
