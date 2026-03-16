@@ -1,0 +1,33 @@
+---
+- name: Base image configuration
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+
+    - name: Install base packages
+      apt:
+        name:
+          - qemu-guest-agent
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Enable qemu-guest-agent
+      systemd:
+        name: qemu-guest-agent
+        enabled: true
+
+    - name: Configure passwordless sudo
+      copy:
+        dest: /etc/sudoers.d/{{ ansible_user }}
+        content: "{{ ansible_user }} ALL=(ALL) NOPASSWD:ALL\n"
+        mode: "0440"
+        validate: visudo -cf %s
+
+    - name: Clean apt cache
+      apt:
+        clean: true

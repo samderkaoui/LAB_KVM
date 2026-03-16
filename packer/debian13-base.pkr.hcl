@@ -4,6 +4,10 @@ packer {
       version = ">= 1.0.0"
       source  = "github.com/hashicorp/qemu"
     }
+    ansible = {
+      version = ">= 1.0.0"
+      source  = "github.com/hashicorp/ansible"
+    }
   }
 }
 
@@ -48,21 +52,12 @@ source "qemu" "debian13" {
 build {
   sources = ["source.qemu.debian13"]
 
-  provisioner "shell" {
-    execute_command = "echo '${var.ssh_password}' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y qemu-guest-agent python3 python3-pip",
-      "sudo systemctl enable qemu-guest-agent",
-      # Clé SSH pour Ansible
-      "mkdir -p ~/.ssh",
-      "curl -s https://raw.githubusercontent.com/TON_GITHUB/lab/main/ansible/files/id_rsa.pub >> ~/.ssh/authorized_keys",
-      "chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys",
-      # Passwordless sudo pour Ansible
-      "echo 'lab ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/lab",
-      # Nettoyage
-      "sudo apt-get clean",
-      "sudo cloud-init clean 2>/dev/null || true"
+  provisioner "ansible" {
+    playbook_file = "${path.root}/../ansible/base.yml"
+    user          = var.ssh_username
+    extra_arguments = [
+      "--extra-vars", "ansible_become_pass=${var.ssh_password}",
+      "--become"
     ]
   }
 }
