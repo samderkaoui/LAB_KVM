@@ -25,8 +25,8 @@ source "qemu" "debian13" {
   output_directory = "output"
   disk_size        = "20G"
   format           = "qcow2"
-  memory           = 2048
-  cpus             = 2
+  memory           = 4096
+  cpus             = 4
   accelerator      = "kvm"
   disk_interface    = "virtio"
   net_device        = "virtio-net"

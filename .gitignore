@@ -13,8 +13,7 @@ packer/default_id_ed25519
 terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
-.terraform
-
+.terraform.tfstate.lock.info
 # Outils & éditeurs
 .claude/
 .vscode/
