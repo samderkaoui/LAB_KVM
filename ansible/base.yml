@@ -14,6 +14,14 @@
           - qemu-guest-agent
           - python3
           - python3-pip
+          - wget
+          - git
+          - curl
+          - bash-completion
+          - rsync
+          - screen
+          - tcpdump
+          - vim
         state: present
 
     - name: Enable qemu-guest-agent
@@ -31,3 +39,69 @@
     - name: Clean apt cache
       apt:
         clean: true
+
+    - name: Colorize shell prompt
+      lineinfile:
+        path: "{{ item.home }}/.bashrc"
+        line: 'export PS1="\[\033[38;5;11m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\]@\h:\[$(tput sgr0)\]\[\033[38;5;6m\][\w]:\[$(tput sgr0)\]\[\033[38;5;15m\] \[$(tput sgr0)\]"'
+        state: present
+      loop:
+        - { home: "/home/{{ ansible_user }}" }
+        - { home: "/root" }
+
+    - name: Alias vi to vim
+      lineinfile:
+        path: "{{ item.home }}/.bashrc"
+        line: "alias vi='vim'"
+        state: present
+      loop:
+        - { home: "/home/{{ ansible_user }}" }
+        - { home: "/root" }
+
+    - name: Configure vim
+      blockinfile:
+        path: "{{ item.home }}/.vimrc"
+        create: true
+        owner: "{{ item.user }}"
+        group: "{{ item.user }}"
+        mode: "0644"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        block: |
+          set nocompatible
+          set number
+          set autoindent
+          syntax on
+          highlight Comment ctermfg=LightCyan
+      loop:
+        - { home: "/home/{{ ansible_user }}", user: "{{ ansible_user }}" }
+        - { home: "/root", user: "root" }
+
+    - name: Generate SSH key pair for ansible_user
+      openssh_keypair:
+        path: /home/{{ ansible_user }}/.ssh/id_ed25519
+        type: ed25519
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0600"
+      register: ssh_keypair
+
+    - name: Add public key to authorized_keys
+      authorized_key:
+        user: "{{ ansible_user }}"
+        key: "{{ ssh_keypair.public_key }}"
+        state: present
+
+    - name: Fetch private key locally
+      fetch:
+        src: /home/{{ ansible_user }}/.ssh/id_ed25519
+        dest: "{{ lookup('env', 'PWD') }}/{{ inventory_hostname }}_id_ed25519"
+        flat: true
+      when: ssh_keypair.changed
+
+    - name: Set local private key permissions
+      delegate_to: localhost
+      become: false
+      file:
+        path: "{{ lookup('env', 'PWD') }}/{{ inventory_hostname }}_id_ed25519"
+        mode: "0600"
+      when: ssh_keypair.changed
