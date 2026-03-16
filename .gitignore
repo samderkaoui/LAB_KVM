@@ -1,0 +1,9 @@
+# Credentials Packer — ne jamais committer
+packer/local.pkrvars.hcl
+
+# Clés SSH générées par Ansible à chaque build
+packer/keys/
+
+# Artefacts Packer
+packer/output/
+packer/.packer_cache/
