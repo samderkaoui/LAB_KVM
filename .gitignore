@@ -7,3 +7,6 @@ packer/keys/
 # Artefacts Packer
 packer/output/
 packer/.packer_cache/
+
+# Clé SSH par défaut générée par Packer
+packer/default_id_ed25519
