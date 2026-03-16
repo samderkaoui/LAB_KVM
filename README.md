@@ -1,19 +1,34 @@
-- Créer le fichier local.pkrvars.hcl
+# LAB KVM
+
+## Prérequis
+
+Créer le fichier `packer/local.pkrvars.hcl` :
 
 ```hcl
-ssh_username  = "lab"
-ssh_password  = "lab"
-iso_checksum  = "sha256:0b813535dd76f2ea96eff908c65e8521512c92a0631fd41c95756ffd7d4896dc" # obtenue avec
-# curl -s https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS | grep netinst
-
+ssh_username = "lab" # valeur souhaitée
+ssh_password = "lab" # valeur souhaitée
+iso_checksum = "sha256:<CHECKSUM>"  # obtenir avec : make sha256
 ```
 
-- Init du projet a la racine des dossiers ( Debian / Almalinux ):
+## Usage
+
 ```bash
-packer init .
+make help       # Liste les commandes disponibles
+make sha256     # Récupère le SHA256 du netinst Debian courant
+make init       # Initialise les plugins Packer
+make build      # Build l'image de base Debian
+make destroy    # Supprime le packer output
 ```
 
--Build avec les variables locales:
+## Workflow
+
 ```bash
-packer build -var-file=local.pkrvars.hcl debian13-base.pkr.hcl
+# 1. Récupérer le checksum et le copier dans local.pkrvars.hcl
+make sha256
+
+# 2. Initialiser Packer
+make init
+
+# 3. Build
+make build
 ```

@@ -65,7 +65,7 @@
         owner: "{{ item.user }}"
         group: "{{ item.user }}"
         mode: "0644"
-        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK" # idempotence
         block: |
           set nocompatible
           set number
@@ -75,6 +75,14 @@
       loop:
         - { home: "/home/{{ ansible_user }}", user: "{{ ansible_user }}" }
         - { home: "/root", user: "root" }
+
+    - name: Ensure .ssh directory exists
+      file:
+        path: /home/{{ ansible_user }}/.ssh
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0700"
 
     - name: Generate SSH key pair for ansible_user
       openssh_keypair:
@@ -87,9 +95,12 @@
 
     - name: Add public key to authorized_keys
       authorized_key:
-        user: "{{ ansible_user }}"
+        user: "{{ item.user }}"
         key: "{{ ssh_keypair.public_key }}"
         state: present
+      loop:
+        - { user: "{{ ansible_user }}" }
+        - { user: "root" }
 
     - name: Fetch private key locally
       fetch:
