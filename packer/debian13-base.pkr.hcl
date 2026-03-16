@@ -30,7 +30,7 @@ source "qemu" "debian13" {
   accelerator      = "kvm"
   disk_interface    = "virtio"
   net_device        = "virtio-net"
-#  headless         = true   # Pour ne pas avoir de GUI lors du build
+  headless         = true   # Pour ne pas avoir de GUI lors du build
 
   http_content = {
     "/preseed.cfg" = templatefile("${path.root}/http/preseed.cfg", {
