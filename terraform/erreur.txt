@@ -1,9 +1,0 @@
-# Forcer QEMU à tourner en root
-sudo sed -i 's/^#\?user = .*/user = "root"/' /etc/libvirt/qemu.conf
-sudo sed -i 's/^#\?group = .*/group = "root"/' /etc/libvirt/qemu.conf
-
-# Désactiver le security driver
-sudo sed -i 's/^#\?security_driver = .*/security_driver = "none"/' /etc/libvirt/qemu.conf
-
-# Redémarrer
-sudo systemctl restart libvirtd

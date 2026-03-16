@@ -30,8 +30,9 @@ resource "libvirt_volume" "debian13_base" {
 }
 
 resource "libvirt_domain" "debian_vm" {
-  name   = var.vm_name
-  type   = "kvm"
+  name        = var.vm_name
+  type        = "kvm"
+  running     = true
   memory      = var.vm_memory
   memory_unit = "MiB"
   vcpu        = var.vm_vcpu
