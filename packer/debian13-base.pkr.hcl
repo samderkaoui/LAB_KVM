@@ -28,6 +28,8 @@ source "qemu" "debian13" {
   memory           = 2048
   cpus             = 2
   accelerator      = "kvm"
+  disk_interface    = "virtio"
+  net_device        = "virtio-net"
 #  headless         = true   # Pour ne pas avoir de GUI lors du build
 
   http_content = {

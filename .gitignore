@@ -8,6 +8,13 @@ packer/.packer_cache/
 # Clé SSH par défaut générée par Packer — ne jamais committer
 packer/default_id_ed25519
 
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+.terraform
+
 # Outils & éditeurs
 .claude/
 .vscode/
