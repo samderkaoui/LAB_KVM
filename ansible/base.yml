@@ -22,6 +22,7 @@
           - screen
           - tcpdump
           - vim
+          - kitty-terminfo
         state: present
 
     - name: Enable qemu-guest-agent

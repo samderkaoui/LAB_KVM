@@ -32,8 +32,9 @@ resource "libvirt_volume" "debian13_base" {
 resource "libvirt_domain" "debian_vm" {
   name   = var.vm_name
   type   = "kvm"
-  memory = var.vm_memory
-  vcpu   = var.vm_vcpu
+  memory      = var.vm_memory
+  memory_unit = "MiB"
+  vcpu        = var.vm_vcpu
 
   os = {
     type      = "hvm"
@@ -65,6 +66,9 @@ resource "libvirt_domain" "debian_vm" {
 
     interfaces = [
       {
+        model = {
+          type = "virtio"
+        }
         source = {
           network = {
             network = var.vm_network
