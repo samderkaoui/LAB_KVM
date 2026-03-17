@@ -1,3 +1,16 @@
+data "external" "vm_ip" {
+  depends_on = [libvirt_domain.vm]
+
+  program = [
+    "bash", "-c",
+    "for i in $(seq 1 30); do IP=$(sudo virsh domifaddr ${libvirt_domain.vm.name} 2>/dev/null | grep -oE '[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+' | head -1); if [ -n \"$IP\" ]; then printf '{\"ip\":\"%s\"}' \"$IP\"; exit 0; fi; sleep 5; done; printf '{\"ip\":\"\"}'"
+  ]
+}
+
+locals {
+  vm_ip = data.external.vm_ip.result.ip
+}
+
 resource "libvirt_volume" "disk" {
   name = "${var.vm_name}-base.qcow2"
   pool = "default"
