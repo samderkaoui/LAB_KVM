@@ -4,7 +4,7 @@ module "vm_k3s_master" {
   base_image      = var.base_image
   memory          = 2048
   vcpu            = 2
-  playbook        = "../ansible/set_static_ip.yml"
+  playbook        = "../ansible/test.yml"
   ansible_user    = "lab"
   ssh_private_key = "../packer/default_id_ed25519"
 }
@@ -15,7 +15,7 @@ module "vm_k3s_worker_1" {
   base_image      = var.base_image
   memory          = 2048
   vcpu            = 2
-  playbook        = "../ansible/set_static_ip.yml"
+  playbook        = "../ansible/test.yml"
   ansible_user    = "lab"
   ssh_private_key = "../packer/default_id_ed25519"
 }
@@ -26,7 +26,7 @@ module "vm_k3s_worker_2" {
   base_image      = var.base_image
   memory          = 2048
   vcpu            = 2
-  playbook        = "../ansible/set_static_ip.yml"
+  playbook        = "../ansible/test.yml"
   ansible_user    = "lab"
   ssh_private_key = "../packer/default_id_ed25519"
 }
