@@ -1,3 +1,17 @@
 - name: Update apt cache
   apt:
     update_cache: true
+
+- name: Check if k3s is already installed
+  stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary
+
+- name: install k3s
+  shell: curl -sfL https://get.k3s.io | sh -s - server --node-ip {{ ansible_default_ipv4.address }} --bind-address {{ ansible_default_ipv4.address }} --advertise-address {{ ansible_default_ipv4.address }}
+  when: k3s_binary.stat.exists is false
+
+- name: Set k3s.yaml permissions
+  file:
+    path: /etc/rancher/k3s/k3s.yaml
+    mode: "0777"
