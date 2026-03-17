@@ -1,0 +1,6 @@
+# Variables de configuration pour Packer
+# Copiez ce fichier en local.pkrvars.hcl et remplissez les valeurs
+
+ssh_username  = "lab"
+ssh_password  = "lab"
+iso_checksum  = "sha256:REMPLACEZ_AVEC_LE_CHECKSUM_OBTENU_VIA_MAKE_SHA256"
