@@ -11,20 +11,21 @@ locals {
   vm_ip = data.external.vm_ip.result.ip
 }
 
-resource "null_resource" "ansible" {
-  count = var.playbook != "" ? 1 : 0
+# OLD WAY...Pas recommandé par Hashic
+# resource "null_resource" "ansible" {
+#   count = var.playbook != "" ? 1 : 0
 
-  depends_on = [data.external.vm_ip]
+#   depends_on = [data.external.vm_ip]
 
-  triggers = {
-    vm_ip    = local.vm_ip
-    playbook = var.playbook
-  }
+#   triggers = {
+#     vm_ip    = local.vm_ip
+#     playbook = var.playbook
+#   }
 
-  provisioner "local-exec" {
-    command = "ansible-playbook -i '${local.vm_ip},' -u ${var.ansible_user} --private-key ${var.ssh_private_key} --ssh-extra-args='-o StrictHostKeyChecking=no' -e \"vm_hostname_by_cli=${var.vm_name}\" ${var.playbook}"
-  }
-}
+#   provisioner "local-exec" {
+#     command = "ansible-playbook -i '${local.vm_ip},' -u ${var.ansible_user} --private-key ${var.ssh_private_key} --ssh-extra-args='-o StrictHostKeyChecking=no' -e \"vm_hostname_by_cli=${var.vm_name}\" ${var.playbook}"
+#   }
+# }
 
 resource "libvirt_volume" "disk" {
   name = "${var.vm_name}-base.qcow2"

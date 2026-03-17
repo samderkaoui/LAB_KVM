@@ -1,3 +1,5 @@
+.PHONY: help prerequis vm-ips logs-qemu terraform-fmt terraform-validate terraform-init terraform-apply terraform-destroy packer-init packer-build sha256 packer-destroy ansible
+# .PHONY` dit à Make que ces cibles **ne sont pas des fichiers**.
 default: help
 
 SHELL := /bin/bash -eu
@@ -6,6 +8,11 @@ TERRAFORM_DIR := terraform
 PKRVARS     := local.pkrvars.hcl
 PKRFILE     := debian13-base.pkr.hcl
 DEBIAN_SHA  := https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS
+ANSIBLE_INVENTORY := ./ansible/hosts.yml
+ANSIBLE_PLAYBOOK := ./ansible/set_hostname.yml
+ANSIBLE_PRIVATE_KEY := ./packer/default_id_ed25519
+ANSIBLE_USER := lab
+
 
 # Colors
 export TERM=xterm-256color
@@ -73,3 +80,7 @@ sha256:		## Get Debian netinst SHA256
 packer-destroy:	## Clean packer output
 	@$(call red, "Removing packer output")
 	rm -rf $(PACKER_DIR)/output
+
+ansible:	## Ansible
+	@$(call yellow, "Ansible")
+	ansible-playbook -i $(ANSIBLE_INVENTORY) $(ANSIBLE_PLAYBOOK) --ssh-extra-args='-o StrictHostKeyChecking=no' --private-key $(ANSIBLE_PRIVATE_KEY) -u $(ANSIBLE_USER)

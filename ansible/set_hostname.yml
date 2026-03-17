@@ -1,17 +1,26 @@
 ---
-- name: Set hostname and configure VM's with right Ansible Playbook
+# - name: Set hostname and configure VM's with right Ansible Playbook with old way ( commented main.tf in module) but might help in some
+#   case so i left it there
+#   hosts: all
+#   become: true
+
+#   tasks:
+#     - name: Set hostname
+#       hostname:
+#         name: "{{ inventory_hostname }}"
+
+#     - name: config master
+#       include_tasks: ./k3s/master/master.yml
+#       when: vm_hostname_by_cli == "k3s-Master"
+
+#     - name: config worker
+#       include_tasks: ./k3s/worker/worker.yml
+#       when: vm_hostname_by_cli is match("k3s-Worker.*")
+
+- name: Set hostname and configure with ansible inventories
   hosts: all
   become: true
-
   tasks:
     - name: Set hostname
       hostname:
-        name: "{{ vm_hostname_by_cli }}"
-
-    - name: config master
-      include_tasks: ./k3s/master/master.yml
-      when: vm_hostname_by_cli == "k3s-Master"
-
-    - name: config worker
-      include_tasks: ./k3s/worker/worker.yml
-      when: vm_hostname_by_cli is match("k3s-Worker.*")
+        name: "{{ inventory_hostname }}"

@@ -30,3 +30,6 @@ Chart.lock
 
 # Credentials
 auth_file.json
+
+# Ansible
+ansible/hosts.yml

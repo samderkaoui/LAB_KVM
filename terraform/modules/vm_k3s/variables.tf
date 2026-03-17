@@ -26,20 +26,20 @@ variable "network" {
   default     = "default"
 }
 
-variable "playbook" {
-  description = "Path to the Ansible playbook to run after VM creation"
-  type        = string
-  default     = ""
-}
+# variable "playbook" {
+#   description = "Path to the Ansible playbook to run after VM creation"
+#   type        = string
+#   default     = ""
+# }
 
-variable "ansible_user" {
-  description = "SSH user for Ansible"
-  type        = string
-  default     = "lab"
-}
+# variable "ansible_user" {
+#   description = "SSH user for Ansible"
+#   type        = string
+#   default     = "lab"
+# }
 
-variable "ssh_private_key" {
-  description = "Path to the SSH private key for Ansible"
-  type        = string
-  default     = "../packer/default_id_ed25519"
-}
+# variable "ssh_private_key" {
+#   description = "Path to the SSH private key for Ansible"
+#   type        = string
+#   default     = "../packer/default_id_ed25519"
+# }
