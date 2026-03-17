@@ -179,13 +179,13 @@ Ce fichier contient les variables spécifiques à votre environnement :
 - `ssh_password` : Mot de passe pour SSH
 - `iso_checksum` : Checksum SHA256 de l'ISO Debian
 
-### Variables Terraform
+### Variables Terraform (`terraform/variables.tf`)
 
 Le projet utilise les variables Terraform suivantes :
 
 - `base_image` : Chemin vers l'image Debian générée par Packer (par défaut : `"../packer/output/debian13-base.qcow2"`)
 
-Vous pouvez surcharger ces variables en créant un fichier `terraform.tfvars` ou en utilisant l'option `-var` avec les commandes Terraform.
+Sinon pour modifier le nom des VM's, la RAM etc... ca se passe dans : ***terraform/main.tf***
 
 ### Provider Terraform
 
