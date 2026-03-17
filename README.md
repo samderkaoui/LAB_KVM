@@ -13,8 +13,8 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 - [Dépannage](#dépannage)
 
 ## To DO
-
-- [] Créer une collection ansible pour tout configurer (role , import_playbook/tasks) => install k3s master/worker , Configuration GITLAB ( Dockerisé)
+✅ ⛔
+- [ ] Créer une collection ansible pour tout configurer (role , import_playbook/tasks) => install k3s master/worker , Configuration GITLAB ( Dockerisé)
 
 ## Prérequis
 
