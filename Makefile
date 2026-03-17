@@ -40,7 +40,7 @@ logs-qemu:	## Show QEMU logs
 
 terraform-init:	## Terraform init
 	@$(call purple, "Terraform init")
-	cd $(TERRAFORM_DIR) && terraform init
+	cd $(TERRAFORM_DIR) && terraform init --upgrade
 
 terraform-apply:	## Terraform apply
 	@$(call cyan, "Terraform apply")

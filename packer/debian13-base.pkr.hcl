@@ -1,3 +1,4 @@
+### PLUGINS ###
 packer {
   required_plugins {
     qemu = {
@@ -11,6 +12,7 @@ packer {
   }
 }
 
+### VARIABLES ### A laisser pour déclarer la variables car PKVARS fournis seulement la valeur.
 variable "ssh_username" {}
 
 variable "ssh_password" {
@@ -19,6 +21,7 @@ variable "ssh_password" {
 
 variable "iso_checksum" {}
 
+### VM ###
 source "qemu" "debian13" {
   iso_url          = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.4.0-amd64-netinst.iso"
   iso_checksum     = var.iso_checksum
