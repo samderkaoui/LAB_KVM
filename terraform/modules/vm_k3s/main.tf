@@ -22,7 +22,7 @@ resource "null_resource" "ansible" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${local.vm_ip},' -u ${var.ansible_user} --private-key ${var.ssh_private_key} --ssh-extra-args='-o StrictHostKeyChecking=no' ${var.playbook}"
+    command = "ansible-playbook -i '${local.vm_ip},' -u ${var.ansible_user} --private-key ${var.ssh_private_key} --ssh-extra-args='-o StrictHostKeyChecking=no' -e \"vm_hostname_by_cli=${var.vm_name}\" ${var.playbook}"
   }
 }
 

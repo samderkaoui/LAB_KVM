@@ -1,0 +1,9 @@
+---
+- name: Base image configuration
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ vm_hostname_by_cli }}"
