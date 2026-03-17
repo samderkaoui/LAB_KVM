@@ -38,6 +38,14 @@ logs-qemu:	## Show QEMU logs
 	@$(call cyan, "Showing QEMU logs")
 	sudo cat /var/log/libvirt/qemu/debian-vm.log | tail -50
 
+terraform-fmt:	## Terraform fmt
+	@$(call green, "Terraform fmt")
+	cd $(TERRAFORM_DIR) && terraform fmt --recursive
+
+terraform-validate:	## Terraform validate
+	@$(call green, "Terraform validate")
+	cd $(TERRAFORM_DIR) && terraform validate
+
 terraform-init:	## Terraform init
 	@$(call purple, "Terraform init")
 	cd $(TERRAFORM_DIR) && terraform init --upgrade
@@ -49,10 +57,6 @@ terraform-apply:	## Terraform apply
 terraform-destroy:	## Terraform destroy
 	@$(call red, "Terraform destroy")
 	cd $(TERRAFORM_DIR) && terraform destroy -auto-approve
-
-terraform-fmt:	## Terraform fmt
-	@$(call green, "Terraform fmt")
-	cd $(TERRAFORM_DIR) && terraform fmt
 
 packer-init:		## Packer init
 	@$(call cyan, "Packer init")

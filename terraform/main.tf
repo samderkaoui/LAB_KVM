@@ -1,84 +1,23 @@
-resource "libvirt_volume" "debian13_base" {
-  name = "${var.vm_name}-base.qcow2"
-  pool = "default"
-
-  target = {
-    format = {
-      type = "qcow2"
-    }
-  }
-
-  create = {
-    content = {
-      url = "file://${abspath(var.base_image)}"
-    }
-  }
+module "vm_k3s_master" {
+  source     = "./modules/vm"
+  vm_name    = "k3s-Master"
+  base_image = var.base_image
+  memory     = 2048
+  vcpu       = 2
 }
 
-resource "libvirt_domain" "debian_vm" {
-  name        = var.vm_name
-  type        = "kvm"
-  running     = true
-  memory      = var.vm_memory
-  memory_unit = "MiB"
-  vcpu        = var.vm_vcpu
+module "vm_k3s_worker_1" {
+  source     = "./modules/vm"
+  vm_name    = "k3s-Worker-1"
+  base_image = var.base_image
+  memory     = 2048
+  vcpu       = 2
+}
 
-  os = {
-    type      = "hvm"
-    type_arch = "x86_64"
-    boot_devices = [
-      { dev = "hd" }
-    ]
-  }
-
-  devices = {
-    disks = [
-      {
-        driver = {
-          name = "qemu"
-          type = "qcow2"
-        }
-        target = {
-          dev = "vda"
-          bus = "virtio"
-        }
-        source = {
-          volume = {
-            pool   = "default"
-            volume = libvirt_volume.debian13_base.name
-          }
-        }
-      }
-    ]
-
-    interfaces = [
-      {
-        model = {
-          type = "virtio"
-        }
-        source = {
-          network = {
-            network = var.vm_network
-          }
-        }
-      }
-    ]
-
-    serials = [
-      {
-        target = {
-          port = 0
-        }
-      }
-    ]
-
-    consoles = [
-      {
-        target = {
-          type = "serial"
-          port = 0
-        }
-      }
-    ]
-  }
+module "vm_k3s_worker_2" {
+  source     = "./modules/vm"
+  vm_name    = "k3s-Worker-2"
+  base_image = var.base_image
+  memory     = 2048
+  vcpu       = 2
 }
