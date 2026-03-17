@@ -1,5 +1,5 @@
 ---
-- name: Base image configuration
+- name: Set hostname and configure VM's with right Ansible Playbook
   hosts: all
   become: true
 
@@ -7,3 +7,11 @@
     - name: Set hostname
       hostname:
         name: "{{ vm_hostname_by_cli }}"
+
+    - name: config master
+      include_tasks: ./k3s/master/master.yml
+      when: vm_hostname_by_cli == "k3s-Master"
+
+    - name: config worker
+      include_tasks: ./k3s/worker/worker.yml
+      when: vm_hostname_by_cli is match("k3s-Worker.*")
