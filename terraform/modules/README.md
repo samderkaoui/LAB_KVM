@@ -14,6 +14,10 @@ modules/nom_du_module/
 └── versions.tf      # Configuration des versions
 ```
 
+Quand garder les versions dans le module ?**
+
+Uniquement si le module est **publié et réutilisable** (Terraform Registry, consommé par d'autres projets) — là il doit s'autodécrire sans dépendre d'une racine spécifique.
+
 ## Exemple : Module VM
 
 Voici l'exemple du module `vm` qui crée une machine virtuelle KVM :
