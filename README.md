@@ -14,8 +14,17 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ## To DO
 ✅ ⛔
-- [ ] Créer une collection ansible pour tout configurer (role , import_playbook/tasks) => install k3s master/worker , Configuration GITLAB ( Dockerisé avec module ansible) et un playbook unique (renommer le set_hostname) comme point d'entrer ( pour le make ansible ) et un role pour l'example ( juste fera un apt update comme task)
-- [ ] Importer premier chart helm
+- [ ] faire un make pour installer k9s localement ( voir kubeadmvagrant/master.sh etape 8 )
+- [ ] Installer kubens/kubectx ( voir kubeadmvagrant/master.sh etape 11)
+- [ ] faire en sorte de récuperer de manière automatique la conf k8s du master k3s (ansible ou via make a voir) ( voir kubeadmvagrant/master.sh etape 2)
+- [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
+- [ ] Créer une collection ansible pour tout configurer (role , import_playbook/tasks) => install k3s master/worker , Configuration GITLAB ( Dockerisé avec module ansible) et un playbook unique (renommer le set_hostname) comme point d'entré ( pour le make ansible )
+- [ ] Faire premiers pipeline CI/CD en mode DooD  ( faire un pipeline test / ssh / deploy etc...)
+- [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
+- [ ] Importer chart longhorn pour le stockage
+- [ ] Importer premier chart helm argocd pour configurer argo
+- [ ] Importer chart kube-prom-stack pour l'obs
+- [ ] KubeadmVagrant/install/todo_manual.sh => METALLB / API GATEWAY / CERT MANAGER / etc...
 
 ## Prérequis
 
@@ -157,20 +166,21 @@ LAB_KVM/
 ├── Makefile              # Automatisation des commandes
 ├── packer/               # Configuration Packer
 │   ├── debian13-base.pkr.hcl  # Définition de l'image
-│   ├── local.pkrvars.hcl      # Variables Packer
-│   ├── default_id_ed25519     # Clé SSH pour Packer
+│   ├── local.pkrvars.hcl      # Variables Packer ( id / pw et checksum)
+│   ├── default_id_ed25519     # Clé SSH pour Packer créée par le playbook ansible utilisé lors du packer build
 │   ├── http/                  # Fichiers de provisionnement HTTP
 │   └── output/                # Images générées
 ├── terraform/            # Configuration Terraform
 │   ├── main.tf           # Configuration principale
 │   ├── variables.tf      # Variables Terraform
-│   ├── providers.tf      # Définition des providers
+│   ├── providers.tf      # Configuration des providers
+│   ├── versions.tf       # Définition des version des providers
 │   ├── outputs.tf        # Sorties Terraform
 │   └── modules/          # Modules Terraform
 ├── ansible/              # Configuration Ansible
 │   ├── hosts.yml         # Inventaire des hôtes ( généré par Terraform )
 │   ├── set_hostname.yml  # Playbook principal ( A RENOMMER)
-│   ├── base.yml          # Playbook de base pour packer
+│   ├── base.yml          # Playbook de base utilisé pour packer
 │   └── k3s/              # Configuration K3s
 └── README.md             # Documentation
 ```
