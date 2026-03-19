@@ -34,6 +34,34 @@ prerequis:	## Configuring QEMU
 	sudo sed -i 's/^#\?security_driver = .*/security_driver = "none"/' /etc/libvirt/qemu.conf
 	sudo systemctl restart libvirtd
 
+k9s:		## Install k9s
+	@$(call cyan, "Install k9s")
+	@K9S_VERSION=$$(curl -s https://api.github.com/repos/derailed/k9s/releases/latest | grep tag_name | cut -d '"' -f 4); \
+	if [ -z "$$K9S_VERSION" ]; then \
+		echo "Pas d'accès à GitHub → utilisation d'une version connue stable"; \
+		K9S_VERSION="v0.50.18"; \
+	fi; \
+	echo "Version k9s détectée/forcée : $$K9S_VERSION"; \
+	sudo curl -L https://github.com/derailed/k9s/releases/download/$${K9S_VERSION}/k9s_Linux_amd64.tar.gz \
+		-o /tmp/k9s.tar.gz; \
+	sudo tar -xzf /tmp/k9s.tar.gz -C /tmp k9s; \
+	sudo mv /tmp/k9s /usr/local/bin/k9s; \
+	sudo chmod +x /usr/local/bin/k9s; \
+	sudo rm -f /tmp/k9s.tar.gz; \
+	echo "k9s installé avec succès !"
+
+kubens:		## Install kubens
+	@$(call cyan, "Install kubens")
+	@curl -s https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens | sudo tee /usr/local/bin/kubens > /dev/null
+	@sudo chmod +x /usr/local/bin/kubens
+	@echo "kubens installé avec succès !"
+
+kubectx:	## Install kubectx
+	@$(call cyan, "Install kubectx")
+	@curl -s https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx | sudo tee /usr/local/bin/kubectx > /dev/null
+	@sudo chmod +x /usr/local/bin/kubectx
+	@echo "kubectx installé avec succès !"
+
 vm-ips:		## Show all VMs IP addresses
 	@$(call cyan, "VMs IP addresses")
 	@for vm in $$(sudo virsh list --name); do \
