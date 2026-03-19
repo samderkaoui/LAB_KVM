@@ -28,6 +28,31 @@ libvirt = { source = "dmacvicar/libvirt", version = ">= 0.9.0" }
 
 Règle : le module **déclare** ses providers (obligatoire), la racine **fixe** les versions (source de vérité unique). Pour upgrader un provider, on ne modifie que la racine.
 
+## Gestion des variables
+
+Le module déclare ses variables avec des défauts dans son `variables.tf` — c'est son contrat d'interface. La racine passe les valeurs via le bloc `module` dans `main.tf`, et son propre `variables.tf` sert uniquement à exposer des paramètres configurables depuis l'extérieur (`.tfvars`, `-var`).
+
+```hcl
+# modules/vm_k3s/variables.tf — contrat d'interface du module
+variable "memory" {
+  type    = number
+  default = 2048
+}
+
+# terraform/variables.tf — expose le paramètre à l'extérieur (optionnel)
+variable "vm_memory" {
+  type    = number
+  default = 4096
+}
+
+# terraform/main.tf — relaie la variable racine vers le module
+module "vm_k3s" {
+  source = "./modules/vm_k3s"
+  memory = var.vm_memory  # via variable racine (configurable depuis l'extérieur)
+  # memory = 5555         # ou valeur directe (hardcodé)
+}
+```
+
 ## Exemple : Module VM
 
 Voici l'exemple du module `vm` qui crée une machine virtuelle KVM :
