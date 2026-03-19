@@ -34,7 +34,7 @@ prerequis:	## Configuring QEMU
 	sudo sed -i 's/^#\?group = .*/group = "root"/' /etc/libvirt/qemu.conf
 	sudo sed -i 's/^#\?security_driver = .*/security_driver = "none"/' /etc/libvirt/qemu.conf
 	sudo systemctl restart libvirtd
-	sudo apt install -y python3-venv python3-pip python3
+	sudo apt install -y python3-venv python3-pip python3 kubectl
 	python3 -m venv $(ANSIBLE_VENV)
 
 k9s:		## Install k9s

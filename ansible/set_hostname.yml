@@ -24,3 +24,28 @@
     - name: Set hostname
       ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
+
+    - name: config master
+      include_tasks: ./k3s/master/master.yml
+      when: inventory_hostname == 'k3s-master'
+
+    - name: config worker
+      include_tasks: ./k3s/worker/worker.yml
+      when: inventory_hostname is match('k3s-worker-.*')
+
+- name: Fetch kubeconfig from master and configure locally
+  hosts: k3s-master
+  become: true
+  tasks:
+    - name: Fetch kubeconfig from master
+      ansible.builtin.fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+        flat: true
+# not used but might be helpfull in other case.
+# - name: Replace 127.0.0.1 with master IP in kubeconfig
+#   ansible.builtin.lineinfile:
+#     path: "{{ lookup('env', 'HOME') }}/.kube/config"
+#     regexp: 'https://127\.0\.0\.1:'
+#     line: "    server: https://{{ ansible_host }}:6443"
+#   delegate_to: localhost
