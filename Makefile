@@ -1,4 +1,4 @@
-.PHONY: help prerequis vm-ips logs-qemu terraform-fmt terraform-validate terraform-init terraform-apply terraform-destroy packer-init packer-build sha256 packer-destroy ansible
+.PHONY: help prerequis vm-ips logs-qemu terraform-fmt terraform-validate terraform-init terraform-apply terraform-destroy packer-init packer-build sha256 packer-destroy ansible ansible-lint-install tflint-install ansible-lint terraform-lint
 # .PHONY` dit à Make que ces cibles **ne sont pas des fichiers**.
 default: help
 
@@ -12,6 +12,7 @@ ANSIBLE_INVENTORY := ./ansible/hosts.yml
 ANSIBLE_PLAYBOOK := ./ansible/set_hostname.yml
 ANSIBLE_PRIVATE_KEY := ./packer/default_id_ed25519
 ANSIBLE_USER := lab
+ANSIBLE_VENV  := .venv/ansible-lint
 
 
 # Colors
@@ -33,6 +34,8 @@ prerequis:	## Configuring QEMU
 	sudo sed -i 's/^#\?group = .*/group = "root"/' /etc/libvirt/qemu.conf
 	sudo sed -i 's/^#\?security_driver = .*/security_driver = "none"/' /etc/libvirt/qemu.conf
 	sudo systemctl restart libvirtd
+	sudo apt install -y python3-venv python3-pip python3
+	python3 -m venv $(ANSIBLE_VENV)
 
 k9s:		## Install k9s
 	@$(call cyan, "Install k9s")
@@ -112,3 +115,31 @@ packer-destroy:	## Clean packer output
 ansible:	## Ansible
 	@$(call yellow, "Ansible")
 	ansible-playbook -i $(ANSIBLE_INVENTORY) $(ANSIBLE_PLAYBOOK) --ssh-extra-args='-o StrictHostKeyChecking=no' --private-key $(ANSIBLE_PRIVATE_KEY) -u $(ANSIBLE_USER)
+
+ansible-lint-install:	## Install ansible-lint (venv: .venv/ansible-lint)
+	@$(call cyan, "Install ansible-lint")
+	$(ANSIBLE_VENV)/bin/pip install --upgrade pip ansible-lint
+	@echo "ansible-lint installé avec succès dans $(ANSIBLE_VENV) !"
+
+tflint-install:	## Install tflint
+	@$(call cyan, "Install tflint")
+	@TFLINT_VERSION=$$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep tag_name | cut -d '"' -f 4); \
+	if [ -z "$$TFLINT_VERSION" ]; then \
+		echo "Pas d'accès à GitHub → utilisation d'une version connue stable"; \
+		TFLINT_VERSION="v0.55.0"; \
+	fi; \
+	echo "Version tflint détectée/forcée : $$TFLINT_VERSION"; \
+	curl -L https://github.com/terraform-linters/tflint/releases/download/$${TFLINT_VERSION}/tflint_linux_amd64.zip \
+		-o /tmp/tflint.zip; \
+	sudo unzip -o /tmp/tflint.zip -d /usr/local/bin tflint; \
+	sudo chmod +x /usr/local/bin/tflint; \
+	rm -f /tmp/tflint.zip; \
+	echo "tflint installé avec succès !"
+
+ansible-lint:	## Lint ansible directory
+	@$(call yellow, "Linting Ansible")
+	$(ANSIBLE_VENV)/bin/ansible-lint ./ansible/
+
+terraform-lint:	## Lint terraform directory
+	@$(call green, "Linting Terraform")
+	cd $(TERRAFORM_DIR) && tflint --init && tflint --recursive

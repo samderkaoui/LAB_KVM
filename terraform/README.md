@@ -14,9 +14,19 @@ modules/nom_du_module/
 └── versions.tf      # Configuration des versions
 ```
 
-Quand garder les versions dans le module ?**
+## Gestion des versions
 
-Uniquement si le module est **publié et réutilisable** (Terraform Registry, consommé par d'autres projets) — là il doit s'autodécrire sans dépendre d'une racine spécifique.
+**Racine** (`terraform/versions.tf`) — fixe les versions exactes de tous les providers :
+```hcl
+libvirt = { source = "dmacvicar/libvirt", version = "= 0.9.5" }
+```
+
+**Module** (`modules/*/versions.tf`) — déclare uniquement les providers utilisés, avec des contraintes larges :
+```hcl
+libvirt = { source = "dmacvicar/libvirt", version = ">= 0.9.0" }
+```
+
+Règle : le module **déclare** ses providers (obligatoire), la racine **fixe** les versions (source de vérité unique). Pour upgrader un provider, on ne modifie que la racine.
 
 ## Exemple : Module VM
 
@@ -94,10 +104,11 @@ output "vm_name" {
 ### versions.tf
 ```hcl
 terraform {
+  required_version = ">= 1.0.0"
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.9.5"
+      version = ">= 0.9.0"
     }
   }
 }
@@ -144,10 +155,11 @@ Pour tester un module, créez un fichier de test dans un répertoire séparé :
 ```hcl
 # test/main.tf
 terraform {
+  required_version = ">= 1.0.0"
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = "0.9.5"
+      version = "= 0.9.5"  # version fixe ici car c'est une racine
     }
   }
 }

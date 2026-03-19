@@ -16,6 +16,7 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 ✅ ⛔
 - [x] faire un make pour installer k9s localement ( voir kubeadmvagrant/master.sh etape 8 )
 - [x] Installer kubens/kubectx ( voir kubeadmvagrant/master.sh etape 11)
+- [ ] Rajoute ansible lint et tf lint
 - [ ] faire en sorte de récuperer de manière automatique la conf k8s du master k3s (ansible ou via make a voir) ( voir kubeadmvagrant/master.sh etape 2)
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Créer une collection ansible pour tout configurer (role , import_playbook/tasks) => install k3s master/worker , Configuration GITLAB ( Dockerisé avec module ansible) et un playbook unique (renommer le set_hostname) comme point d'entré ( pour le make ansible )
