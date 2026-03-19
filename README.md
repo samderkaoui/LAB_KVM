@@ -16,7 +16,7 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 ✅ ⛔
 - [x] faire un make pour installer k9s localement ( voir kubeadmvagrant/master.sh etape 8 )
 - [x] Installer kubens/kubectx ( voir kubeadmvagrant/master.sh etape 11)
-- [ ] Rajoute ansible lint et tf lint
+- [x] Rajoute ansible lint et tf lint
 - [ ] faire en sorte de récuperer de manière automatique la conf k8s du master k3s (ansible ou via make a voir) ( voir kubeadmvagrant/master.sh etape 2)
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Créer une collection ansible pour tout configurer (role , import_playbook/tasks) => install k3s master/worker , Configuration GITLAB ( Dockerisé avec module ansible) et un playbook unique (renommer le set_hostname) comme point d'entré ( pour le make ansible )
@@ -80,7 +80,14 @@ make logs-qemu         # Affiche les 50 dernières lignes des logs QEMU
 
 ### Configuration système
 ```bash
-make prerequis         # Configure QEMU (user root + security_driver none)
+make prerequis         # Configure QEMU (user root + security_driver none) + crée le venv ansible-lint
+```
+
+### Outils Kubernetes locaux
+```bash
+make k9s               # Installe k9s (détecte automatiquement la dernière version)
+make kubens            # Installe kubens
+make kubectx           # Installe kubectx
 ```
 
 ### Packer - Construction d'images
@@ -93,16 +100,24 @@ make packer-destroy    # Supprime les fichiers de sortie de Packer
 
 ### Terraform - Provisionnement d'infrastructure
 ```bash
-make terraform-fmt     # Formate les fichiers Terraform
+make terraform-fmt      # Formate les fichiers Terraform
 make terraform-validate # Valide la configuration Terraform
-make terraform-init    # Initialise les providers Terraform
-make terraform-apply   # Crée/met à jour les VMs
-make terraform-destroy # Supprime les VMs
+make terraform-init     # Initialise les providers Terraform
+make terraform-apply    # Crée/met à jour les VMs
+make terraform-destroy  # Supprime les VMs
 ```
 
 ### Ansible - Configuration
 ```bash
 make ansible           # Exécute le playbook Ansible pour configurer les hôtes
+```
+
+### Linting
+```bash
+make ansible-lint-install  # Installe ansible-lint dans le venv (.venv/ansible-lint)
+make tflint-install        # Installe tflint (détecte automatiquement la dernière version)
+make ansible-lint          # Lint le répertoire ansible/
+make terraform-lint        # Lint le répertoire terraform/
 ```
 
 ## Workflow complet
@@ -169,7 +184,7 @@ LAB_KVM/
 │   ├── debian13-base.pkr.hcl  # Définition de l'image
 │   ├── local.pkrvars.hcl      # Variables Packer ( id / pw et checksum)
 │   ├── default_id_ed25519     # Clé SSH pour Packer créée par le playbook ansible utilisé lors du packer build
-│   ├── http/                  # Fichiers de provisionnement HTTP
+│   ├── http/                  # Fichiers de provisionnement HTTP pour packer
 │   └── output/                # Images générées
 ├── terraform/            # Configuration Terraform
 │   ├── main.tf           # Configuration principale
