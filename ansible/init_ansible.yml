@@ -49,3 +49,4 @@
 #     regexp: 'https://127\.0\.0\.1:'
 #     line: "    server: https://{{ ansible_host }}:6443"
 #   delegate_to: localhost
+...
