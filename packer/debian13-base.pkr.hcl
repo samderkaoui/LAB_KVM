@@ -58,7 +58,7 @@ build {
   sources = ["source.qemu.debian13"]
 
   provisioner "ansible" {
-    playbook_file = "${path.root}/../ansible/base.yml"
+    playbook_file = "${path.root}/../ansible/base_packer.yml"
     user          = var.ssh_username
     extra_arguments = [
       "--extra-vars", "ansible_become_pass=${var.ssh_password}",

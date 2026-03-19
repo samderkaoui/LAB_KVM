@@ -14,10 +14,10 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ## To DO
 ✅ ⛔
-- [x] faire un make pour installer k9s localement ( voir kubeadmvagrant/master.sh etape 8 )
-- [x] Installer kubens/kubectx ( voir kubeadmvagrant/master.sh etape 11)
-- [x] Rajoute ansible lint et tf lint
-- [ ] faire en sorte de récuperer de manière automatique la conf k8s du master k3s (ansible ou via make a voir) ( voir kubeadmvagrant/master.sh etape 2)
+- [x] faire un make pour installer k9s localement
+- [x] Installer kubens/kubectx
+- [x] Rajouter ansible lint et tf lint
+- [x] faire en sorte de récuperer de manière automatique la conf k8s du master k3s
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Créer une collection ansible pour tout configurer (role , import_playbook/tasks) => install k3s master/worker , Configuration GITLAB ( Dockerisé avec module ansible) et un playbook unique (renommer le set_hostname) comme point d'entré ( pour le make ansible )
 - [ ] Faire premiers pipeline CI/CD en mode DooD  ( faire un pipeline test / ssh / deploy etc...)
@@ -195,8 +195,8 @@ LAB_KVM/
 │   └── modules/          # Modules Terraform
 ├── ansible/              # Configuration Ansible
 │   ├── hosts.yml         # Inventaire des hôtes ( généré par Terraform )
-│   ├── set_hostname.yml  # Playbook principal ( A RENOMMER)
-│   ├── base.yml          # Playbook de base utilisé pour packer
+│   ├── init_ansible.yml  # Playbook principal
+│   ├── base_packer.yml   # Playbook de base utilisé pour packer
 │   └── k3s/              # Configuration K3s
 └── README.md             # Documentation
 ```
