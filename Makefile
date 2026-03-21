@@ -114,7 +114,7 @@ packer-destroy:	## Clean packer output
 
 ansible:	## Ansible
 	@$(call yellow, "Ansible")
-	ANSIBLE_COLLECTIONS_PATH=./ansible ansible-playbook -i $(ANSIBLE_INVENTORY) $(ANSIBLE_PLAYBOOK) --ssh-extra-args='-o StrictHostKeyChecking=no' --private-key $(ANSIBLE_PRIVATE_KEY) -u $(ANSIBLE_USER)
+	ANSIBLE_COLLECTIONS_PATH=./ansible/ansible_collections ANSIBLE_CONFIG=./ansible/ansible.cfg ansible-playbook -i $(ANSIBLE_INVENTORY) $(ANSIBLE_PLAYBOOK) --ssh-extra-args='-o StrictHostKeyChecking=no' --private-key $(ANSIBLE_PRIVATE_KEY) -u $(ANSIBLE_USER)
 
 ansible-lint-install:	## Install ansible-lint (venv: .venv/ansible-lint)
 	@$(call cyan, "Install ansible-lint")
