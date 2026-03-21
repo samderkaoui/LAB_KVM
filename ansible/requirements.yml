@@ -1,0 +1,12 @@
+---
+# fichier lu par: ansible-galaxy collection install -r requirements.yml
+# installe les collections externes avant de lancer le playbook
+
+collections:
+  # exemple: collection community.general (modules comme ufw, json_query, etc.)
+  - name: community.general
+    version: ">=8.0.0"
+
+  # exemple: collection kubernetes.core (modules k8s, helm, etc.)
+  - name: kubernetes.core
+    version: ">=3.0.0"

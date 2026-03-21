@@ -192,7 +192,7 @@ LAB_KVM/
 │   └── modules/          # Modules Terraform
 ├── ansible/              # Configuration Ansible
 │   ├── hosts.yml         # Inventaire des hôtes ( généré par Terraform )
-│   ├── init_ansible.yml  # Playbook principal
+│   ├── site.yml          # Playbook principal
 │   ├── base_packer.yml   # Playbook de base utilisé pour packer
 │   └── k3s/              # Configuration K3s
 └── README.md             # Documentation

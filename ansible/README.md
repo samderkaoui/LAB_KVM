@@ -55,3 +55,48 @@ roles/k3s/
 ```
 
 Mais pour k3s, la différence master/worker est suffisamment significative (token bootstrap, init du cluster, kubeconfig...) pour justifier 2 rôles distincts.
+
+----
+
+## `requirements.yml` et `meta/main.yml` — collections et dépendances
+
+### `requirements.yml`
+
+Installe les collections Ansible nécessaires au bon fonctionnement de ta propre collection.
+À exécuter une seule fois avant de lancer le playbook :
+
+```bash
+ansible-galaxy collection install -r requirements.yml
+```
+
+### `meta/main.yml` — deux clés distinctes
+
+**`collections`** — raccourcis de nommage pour les modules utilisés dans les tasks.
+
+Sans `collections`, tu dois écrire le nom complet du module :
+```yaml
+- community.general.ufw: ...
+```
+Avec `collections` déclaré dans `meta/main.yml` :
+```yaml
+collections:
+  - community.general
+  - kubernetes.core
+```
+Tu peux écrire directement :
+```yaml
+- ufw: ...
+```
+
+---
+
+**`dependencies`** — rôles qui s'exécutent **avant** ce rôle (pas des collections, des rôles).
+
+```yaml
+dependencies:
+  - labkvm.k3scollection.common
+```
+
+> Exemple : le rôle `common` installe `curl` et configure le système avant que `master_cluster_k3s` tourne.
+
+Les dépendances garantissent un ordre d'exécution déclaratif, sans avoir à les appeler explicitement dans le playbook.

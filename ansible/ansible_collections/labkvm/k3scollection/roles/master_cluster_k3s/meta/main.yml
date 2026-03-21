@@ -1,9 +1,14 @@
 ---
+# collections: raccourci de nommage pour les modules utilises dans les tasks
+#   sans: community.general.ufw / avec: juste ufw
 # collections:
-#   - xxx.xxx
+#   - community.general
+#   - kubernetes.core
 
+# dependencies: roles qui s'executent AVANT ce role (pas des collections, des roles)
+#   ex: le role 'common' installe curl avant que master_cluster_k3s tourne
 # dependencies:
-#   - xxx.test.xxx
+#   - labkvm.k3scollection.common
 
 galaxy_info:
   description: Install Cluster K3s
