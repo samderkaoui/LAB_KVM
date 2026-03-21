@@ -1,0 +1,17 @@
+[Unit]
+Description=test service
+After=syslog.target network.target
+
+[Service]
+User={{ tomcat_user }}
+Group={{ tomcat_group }}
+
+Type=forking
+
+ExecStart=test/bin/startup.sh
+ExecStop=test/bin/shutdown.sh
+
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
