@@ -14,9 +14,10 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ## To DO
 ✅ ⛔
-- [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
+
 - [ ] Créer une collection ansible pour tout configurer (role , import_playbook/tasks avec loop et change name du loop pas de item ... )) => install k3s master/worker , Configuration GITLAB ( Dockerisé avec module ansible) ET REFAIRE      **PROPRE LE INIT ANSIBLE**
 - [ ] Faire premiers pipeline CI/CD en mode DooD  ( faire un pipeline test / ssh / deploy etc...)
+- [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
 - [ ] Importer chart longhorn pour le stockage
 - [ ] Importer premier chart helm argocd pour configurer argo

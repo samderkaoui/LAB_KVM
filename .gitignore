@@ -33,3 +33,4 @@ auth_file.json
 
 # Ansible
 ansible/hosts.yml
+.ansible

@@ -1,0 +1,20 @@
+---
+# collections:
+#   - xxx.xxx
+
+# dependencies:
+#   - xxx.test.xxx
+
+galaxy_info:
+  description: Configure Workers Cluster K3s
+
+  company: LAB_KVM
+  license: GPL-3.0-or-later
+  author: DERKAOUI Samir
+
+  min_ansible_version: 2.15.0
+
+  platforms:
+    - name: DEB
+      versions:
+        - "13"

@@ -1,0 +1,7 @@
+---
+- name: Apt update
+  ansible.builtin.import_tasks: apt.yml
+  when: apt_update_enabled
+
+- name: Init cluster k3s
+  ansible.builtin.import_tasks: k3s.yml

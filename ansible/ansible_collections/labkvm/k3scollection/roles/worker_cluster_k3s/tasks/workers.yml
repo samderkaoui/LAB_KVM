@@ -1,3 +1,4 @@
+---
 - name: Créer dossier dans /tmp
   file:
     path: /tmp/k3s-worker-test

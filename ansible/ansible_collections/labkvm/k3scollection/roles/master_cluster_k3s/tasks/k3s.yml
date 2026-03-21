@@ -1,7 +1,4 @@
-- name: Update apt cache
-  apt:
-    update_cache: true
-
+---
 - name: Check if k3s is already installed
   stat:
     path: /usr/local/bin/k3s

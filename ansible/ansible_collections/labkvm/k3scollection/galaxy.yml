@@ -1,0 +1,10 @@
+namespace: labkvm
+name: k3scollection
+version: 0.0.1
+readme: README.md
+authors:
+  - DERKAOUI Samir
+description: Collection pour déploiement K3s sur LAB KVM
+license:
+  - GPL-3.0-or-later
+requires_ansible: ">=2.15.0"

@@ -17,22 +17,29 @@
 #       include_tasks: ./k3s/worker/worker.yml
 #       when: vm_hostname_by_cli is match("k3s-Worker.*")
 
-- name: Set hostname and configure with ansible inventories
+### SET HOSTNAME
+- name: Set hostname
   hosts: all
   become: true
   tasks:
-    - name: Set hostname
-      ansible.builtin.hostname:
+    - ansible.builtin.hostname:
         name: "{{ inventory_hostname }}"
 
-    - name: config master
-      include_tasks: ./k3s/master/master.yml
-      when: inventory_hostname == 'k3s-master'
+### CONFIGURE MASTER
+- name: Configure master
+  hosts: masters
+  become: true
+  roles:
+    - labkvm.k3scollection.master_cluster_k3s
 
-    - name: config worker
-      include_tasks: ./k3s/worker/worker.yml
-      when: inventory_hostname is match('k3s-worker-.*')
+### CONFIGURE WORKERS
+- name: Configure workers
+  hosts: workers
+  become: true
+  roles:
+    - labkvm.k3scollection.worker_cluster_k3s
 
+### FETCH KUBECONFIG
 - name: Fetch kubeconfig from master and configure locally
   hosts: k3s-master
   become: true
@@ -41,12 +48,4 @@
       ansible.builtin.fetch:
         src: /etc/rancher/k3s/k3s.yaml
         dest: "{{ lookup('env', 'HOME') }}/.kube/config"
-        flat: true
-# not used but might be helpfull in other case.
-# - name: Replace 127.0.0.1 with master IP in kubeconfig
-#   ansible.builtin.lineinfile:
-#     path: "{{ lookup('env', 'HOME') }}/.kube/config"
-#     regexp: 'https://127\.0\.0\.1:'
-#     line: "    server: https://{{ ansible_host }}:6443"
-#   delegate_to: localhost
-...
+        flat: true # Sans `flat`, Ansible reproduit le chemin complet de la source
