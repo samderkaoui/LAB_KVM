@@ -19,6 +19,7 @@ terraform.tfstate.backup
 .vscode/
 /.idea/
 *.iml
+.venv/
 
 # Fichiers système
 .DS_Store
