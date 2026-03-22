@@ -14,96 +14,7 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ## To DO
 ✅ ⛔
-
-- [ ] Créer une collection ansible Configuration GITLAB ( Dockerisé avec module ansible (voir     Docker/gitlab et gitrunner/docker-compose.yml )
-
-```yaml
----
-- name: Deploy GitLab CE stack
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  collections:
-    - community.docker
-
-  vars:
-    gitlab_network_name: gitlab-network
-    gitlab_subnet: "172.30.0.0/16"
-    gitlab_gateway: "172.30.0.1"
-    gitlab_ip: "172.30.0.2"
-    runner_ip: "172.30.0.3"
-    gitlab_base_path: /var/gitll
-
-  tasks:
-
-    # -------------------------------------------------------------------------
-    # Réseau Docker
-    # -------------------------------------------------------------------------
-    - name: Create gitlab bridge network
-      community.docker.docker_network:
-        name: "{{ gitlab_network_name }}"
-        driver: bridge
-        ipam_config:
-          - subnet: "{{ gitlab_subnet }}"
-            gateway: "{{ gitlab_gateway }}"
-        state: present
-
-    # -------------------------------------------------------------------------
-    # Volumes (répertoires hôte)
-    # -------------------------------------------------------------------------
-    - name: Ensure GitLab host directories exist
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        mode: "0755"
-      loop:
-        - "{{ gitlab_base_path }}/config"
-        - "{{ gitlab_base_path }}/logs"
-        - "{{ gitlab_base_path }}/data"
-        - "{{ gitlab_base_path }}/gitlab-runner"
-
-    # -------------------------------------------------------------------------
-    # Conteneur GitLab CE
-    # -------------------------------------------------------------------------
-    - name: Deploy GitLab CE container
-      community.docker.docker_container:
-        name: gitlab-ce
-        image: gitlab/gitlab-ce:latest
-        restart_policy: always
-        hostname: gitlab.sam.com
-        env:
-          GITLAB_OMNIBUS_CONFIG: |
-            external_url 'http://gitlab.sam.com'
-        published_ports:
-          - "80:80"
-          - "443:443"
-        volumes:
-          - "{{ gitlab_base_path }}/config:/etc/gitlab"
-          - "{{ gitlab_base_path }}/logs:/var/log/gitlab"
-          - "{{ gitlab_base_path }}/data:/var/opt/gitlab"
-        networks:
-          - name: "{{ gitlab_network_name }}"
-            ipv4_address: "{{ gitlab_ip }}"
-        state: started
-
-    # -------------------------------------------------------------------------
-    # Conteneur GitLab Runner
-    # -------------------------------------------------------------------------
-    - name: Deploy GitLab Runner container
-      community.docker.docker_container:
-        name: gitlab-runner
-        image: gitlab/gitlab-runner:alpine
-        restart_policy: always
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-          - "{{ gitlab_base_path }}/gitlab-runner:/etc/gitlab-runner"
-        networks:
-          - name: "{{ gitlab_network_name }}"
-            ipv4_address: "{{ runner_ip }}"
-        etc_hosts:
-          gitlab.sam.com: "{{ gitlab_ip }}"
-        state: started
-```
+- [ ] Corriger les collections avec lint ( make ansible-lint )
 - [ ] Faire premiers pipeline CI/CD en mode DooD  ( faire un pipeline test / ssh / deploy etc...)
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
@@ -165,7 +76,7 @@ make logs-qemu         # Affiche les 50 dernières lignes des logs QEMU
 
 ### Configuration système
 ```bash
-make prerequis         # Configure QEMU (user root + security_driver none) + crée le venv ansible-lint
+make prerequis         # Configure QEMU (user root + security_driver none) + installe python3/kubectl/fzf + crée le venv ansible-lint
 ```
 
 ### Outils Kubernetes locaux
@@ -209,7 +120,7 @@ make terraform-lint        # Lint le répertoire terraform/
 
 ### Étape 1 : Configuration initiale (une seule fois)
 ```bash
-# Configurez QEMU pour fonctionner avec les permissions appropriées
+# Configure QEMU, installe python3/kubectl/fzf et crée le venv ansible-lint
 make prerequis
 
 # Récupérez le checksum SHA256 de l'ISO Debian
@@ -279,10 +190,12 @@ LAB_KVM/
 │   ├── outputs.tf        # Sorties Terraform
 │   └── modules/          # Modules Terraform
 ├── ansible/              # Configuration Ansible
-│   ├── hosts.yml         # Inventaire des hôtes ( généré par Terraform )
-│   ├── site.yml          # Playbook principal
-│   ├── base_packer.yml   # Playbook de base utilisé pour packer
-│   └── k3s/              # Configuration K3s
+│   ├── hosts.yml              # Inventaire des hôtes ( généré par Terraform )
+│   ├── site.yml               # Playbook principal
+│   ├── base_packer.yml        # Playbook de base utilisé pour packer
+│   ├── ansible_collections/   # Collections Ansible (ANSIBLE_COLLECTIONS_PATH)
+├── .venv/
+│   └── ansible-lint/          # Venv Python pour ansible-lint (créé par make prerequis)
 └── README.md             # Documentation
 ```
 
