@@ -6,9 +6,8 @@
 #   - kubernetes.core
 
 # dependencies: roles qui s'executent AVANT ce role (pas des collections, des roles)
-#   ex: le role 'common' installe curl avant que master_cluster_k3s tourne
-# dependencies:
-#   - labkvm.k3scollection.common
+dependencies:
+  - labkvm.k3scollection.common
 galaxy_info:
   description: Configure Workers Cluster K3s
 

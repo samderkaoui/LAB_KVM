@@ -1,0 +1,6 @@
+- name: Install packages
+  ansible.builtin.apt:
+    name:
+      - broot
+      - glow
+    state: present
