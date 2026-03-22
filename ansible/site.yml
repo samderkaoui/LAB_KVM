@@ -49,3 +49,10 @@
         src: /etc/rancher/k3s/k3s.yaml
         dest: "{{ lookup('env', 'HOME') }}/.kube/config"
         flat: true # Sans `flat`, Ansible reproduit le chemin complet de la source
+
+### CONFIGURE GITLAB
+- name: Configure Gitlab
+  hosts: gitlab
+  become: true
+  roles:
+    - labkvm.docker.gitlab

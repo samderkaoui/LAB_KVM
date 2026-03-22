@@ -1,0 +1,5 @@
+- name: Installer Docker via le script officiel
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://get.docker.com | sh
+  args:
+    creates: /usr/bin/docker

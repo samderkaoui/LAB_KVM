@@ -1,0 +1,10 @@
+namespace: labkvm
+name: docker
+version: 0.0.1
+readme: README.md
+authors:
+  - DERKAOUI Samir
+description: Collection pour les déploiements DOCKER
+license:
+  - GPL-3.0-or-later
+requires_ansible: ">=2.15.0"

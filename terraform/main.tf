@@ -1,3 +1,15 @@
+module "vm_gitlab" {
+  source     = "./modules/vm_k3s"
+  vm_name    = "gitlab"
+  base_image = var.base_image
+  memory     = 8192
+  vcpu       = 4
+  # Old way
+  # playbook        = "../ansible/set_hostname.yml"
+  # ansible_user    = "lab"
+  # ssh_private_key = "../packer/default_id_ed25519"
+}
+
 module "vm_k3s_master" {
   source     = "./modules/vm_k3s"
   vm_name    = "k3s-Master"
@@ -43,6 +55,10 @@ resource "local_file" "ansible_inventory" {
       #   ansible_user: lab
       #   ansible_ssh_private_key_file: ../packer/default_id_ed25519
       children:
+        gitlab:
+          hosts:
+            gitlab:
+              ansible_host: ${module.vm_gitlab.vm_ip}
         masters:
           hosts:
             k3s-master:

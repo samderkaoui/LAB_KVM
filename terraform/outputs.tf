@@ -21,3 +21,11 @@ output "vm_k3s_worker_2_name" {
 output "vm_k3s_worker_2_ip" {
   value = module.vm_k3s_worker_2.vm_ip
 }
+
+output "vm_gitlab_name" {
+  value = module.vm_gitlab.vm_name
+}
+
+output "vm_gitlab_ip" {
+  value = module.vm_gitlab.vm_ip
+}
