@@ -55,4 +55,4 @@
   hosts: gitlab
   become: true
   roles:
-    - labkvm.docker.gitlab
+    - labkvm.docker.gitlab_keycloak
