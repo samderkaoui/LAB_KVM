@@ -14,7 +14,7 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ## To DO
 ✅ ⛔
-- [ ] Finir doc keycloak et relier gitlab a keycloak
+
 - [ ] Faire un dockerfile optimisé (multi stage etc...) et un pipeline CI avec hadolint pour le linter
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
@@ -192,16 +192,16 @@ ff02::2 ip6-allrouters
 # Puis lancer la commande
 sudo docker exec -ti gitlab-runner gitlab-runner register  --url https://gitlab.sam.com  --token xxxxxxxxxxxxxxxxxxxxxxxxx --tls-ca-file /etc/gitlab-runner/certs/gitkc.crt
 
-# Configurer le runner pour avoir l'ip/dns de mon gitlab
-# /var/gitll/gitlab-runner/config.toml sous [runners.docker] # ip du traefik
+# Configurer le runner pour avoir l'ip/dns de mon gitlab/keycloak via TRAEFIK (donc ip du reverse et pas des conteneurs)
+# /var/gitll/gitlab-runner/config.toml sous [runners.docker]
 extra_hosts = ["gitlab.sam.com:172.30.0.6", "keycloak.sam.com:172.30.0.6"]
 network_mode = "gitlab-network" 
 # si necessaire : volumes = ["/var/gitll/certs/gitkc.crt:/usr/local/share/ca-certificates/gitkc.crt"]
 ```
 
-- Faire la conf manuel keycloak ( voir doc)
+- Faire la conf manuel keycloak (voir doc)
 - maj du token dans le docker-compose
-- rm gitlab-ce
+- rm -f gitlab-ce
 - docker compose up -d
 
 
