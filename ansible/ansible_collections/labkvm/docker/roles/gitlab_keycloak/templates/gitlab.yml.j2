@@ -74,7 +74,7 @@ services:
               uid_field: 'preferred_username',
               client_options: {
                 identifier: 'gitlab',
-                secret: 'xxxxxx',
+                secret: 'xxxxx',
                 redirect_uri: 'https://gitlab.sam.com/users/auth/openid_connect/callback'
               }
             }
@@ -99,6 +99,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - '/var/gitll/gitlab-runner:/etc/gitlab-runner'
+      - '/var/gitll/certs/gitkc.crt:/etc/gitlab-runner/certs/gitkc.crt'
     networks:
       gitlab:
         ipv4_address: 172.30.0.3

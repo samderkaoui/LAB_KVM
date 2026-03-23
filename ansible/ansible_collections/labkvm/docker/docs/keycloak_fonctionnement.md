@@ -139,7 +139,7 @@ docker compose up -d --force-recreate web
 
 GitLab ne lit pas les rôles Keycloak nativement pour les droits projets — il y a deux approches :
 
-### Approche A — Groupes GitLab automatiques (la plus propre)
+### Approche A — Groupes GitLab automatiques (la plus propre)  (le Group sync via OIDC n'existe pas en GitLab CE, c'est une fonctionnalité GitLab EE (payant) uniquement.)
 
 Dans GitLab : **Admin** → **Settings** → **General** → **Sign-in restrictions** → active **Group sync**.
 
@@ -152,11 +152,13 @@ Pour donner les droits admin GitLab automatiquement :
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    ...
+    name: 'openid_connect',
+    label: 'Keycloak SSO',
     args: {
       ...
-      # Donne les droits admin si le token contient le rôle gitlab-admin
-      admin_groups: ['gitlab-admin']
+      groups_attribute: 'roles',
+      admin_groups: ['gitlab-admin'],
+      ...
     }
   }
 ]

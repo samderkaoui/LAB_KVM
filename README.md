@@ -190,7 +190,7 @@ ff02::2 ip6-allrouters
 ```bash
 # Se connecter a gitlab et récupérer le token pour relier le runner au gitlab
 # Puis lancer la commande
-sudo docker exec -ti gitlab-runner gitlab-runner register  --url http://gitlab.sam.com  --token glrt-xxxxxxxxx
+sudo docker exec -ti gitlab-runner gitlab-runner register  --url https://gitlab.sam.com  --token xxxxxxxxxxxxxxxxxxxxxxxxx --tls-ca-file /etc/gitlab-runner/certs/gitkc.crt
 
 # Configurer le runner pour avoir l'ip/dns de mon gitlab
 # /var/gitll/gitlab-runner/config.toml sous [runners.docker]
