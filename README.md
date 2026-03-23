@@ -193,8 +193,8 @@ ff02::2 ip6-allrouters
 sudo docker exec -ti gitlab-runner gitlab-runner register  --url https://gitlab.sam.com  --token xxxxxxxxxxxxxxxxxxxxxxxxx --tls-ca-file /etc/gitlab-runner/certs/gitkc.crt
 
 # Configurer le runner pour avoir l'ip/dns de mon gitlab
-# /var/gitll/gitlab-runner/config.toml sous [runners.docker]
-extra_hosts = ["gitlab.sam.com:172.30.0.2"]
+# /var/gitll/gitlab-runner/config.toml sous [runners.docker] # ip du traefik
+extra_hosts = ["gitlab.sam.com:172.30.0.6", "keycloak.sam.com:172.30.0.6"]
 network_mode = "gitlab-network" 
 
 ```
