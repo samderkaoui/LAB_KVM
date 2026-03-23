@@ -14,8 +14,8 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ## To DO
 ✅ ⛔
-- [ ] Corriger les collections avec lint ( make ansible-lint )
-- [ ] Faire premiers pipeline CI/CD en mode DooD  ( faire un pipeline test / ssh / deploy etc...)
+- [ ] Finir doc keycloak et relier gitlab a keycloak
+- [ ] Faire un dockerfile optimisé (multi stage etc...) et un pipeline CI avec hadolint pour le linter
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
 - [ ] Importer chart longhorn pour le stockage
@@ -164,18 +164,6 @@ make ansible
 ### Étape 5 : Configuration Manuel Gitlab / keycloak (pas d'overengineering :) )
 
 ```bash
-# Se connecter a gitlab et récupérer le token pour relier le runner au gitlab
-# Puis lancer la commande
-sudo docker exec -ti gitlab-runner gitlab-runner register  --url http://gitlab.sam.com  --token glrt-xxxxxxxxx
-
-# Configurer le runner pour avoir l'ip/dns de mon gitlab
-# /var/gitll/gitlab-runner/config.toml sous [runners.docker]
-extra_hosts = ["gitlab.sam.com:172.30.0.2"]
-network_mode = "gitlab-network" 
-
-```
-
-```bash
 virsh edit gitlab (nom de la vm)
 
 # expose directement les instructions CPU de l'hôte à la VM,nécessaire pour que Keycloak (ou d'autres apps) puissent utiliser les extensions CPU avancées 
@@ -198,6 +186,25 @@ ff02::2 ip6-allrouters
 192.168.122.156 gitlab.sam.com
 192.168.122.156 keycloak.sam.com
 ```
+
+```bash
+# Se connecter a gitlab et récupérer le token pour relier le runner au gitlab
+# Puis lancer la commande
+sudo docker exec -ti gitlab-runner gitlab-runner register  --url http://gitlab.sam.com  --token glrt-xxxxxxxxx
+
+# Configurer le runner pour avoir l'ip/dns de mon gitlab
+# /var/gitll/gitlab-runner/config.toml sous [runners.docker]
+extra_hosts = ["gitlab.sam.com:172.30.0.2"]
+network_mode = "gitlab-network" 
+
+```
+
+- Faire la conf manuel keycloak ( voir doc)
+- maj du token dans le docker-compose
+- rm gitlab-ce
+- docker compose up -d
+
+
 
 ### Étape 6 : Nettoyage (si nécessaire)
 ```bash

@@ -1,0 +1,140 @@
+# voir doc du role pour les soucis keycloak
+# discovery: false car discovery OIDC récupère les endpoints depuis Keycloak et certains peuvent contenir des URLs HTTPS. Le plus fiable : désactiver la discovery et hardcoder les endpoints HTTP.
+# et enlever de jwks_uri a end_session_endpoint et host: 'keycloak.sam.com' dans client options
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'gitlab.sam.com' # Modifié pour correspondre à external_url
+    container_name: gitlab-ce
+    extra_hosts:
+        - "keycloak.sam.com:172.30.0.5"
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.sam.com'
+        gitlab_rails['omniauth_enabled'] = true
+        gitlab_rails['omniauth_allow_single_sign_on'] = ['openid_connect']
+        gitlab_rails['omniauth_block_auto_created_users'] = false
+        gitlab_rails['omniauth_auto_link_user'] = ['openid_connect']
+
+        gitlab_rails['omniauth_providers'] = [
+            {
+            name: 'openid_connect',
+            label: 'Keycloak SSO',
+            args: {
+                name: 'openid_connect',
+                scope: ['openid', 'profile', 'email', 'roles'],
+                response_type: 'code',
+                issuer: 'http://keycloak.sam.com:8080/realms/homelab',
+                client_auth_method: 'query',
+                discovery: false,
+                uid_field: 'preferred_username',
+                jwks_uri: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/certs',
+                authorization_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/auth',
+                token_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/token',
+                userinfo_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/userinfo',
+                end_session_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/logout',
+                client_options: {
+                identifier: 'gitlab',
+                secret: 'EBubHamGidRHkO08YBpsltm1MAYhbRkH',
+                redirect_uri: 'http://gitlab.sam.com/users/auth/openid_connect/callback',
+                scheme: 'http',
+                host: 'keycloak.sam.com',
+                port: 8080
+                }
+            }
+            }
+        ]
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '/var/gitll/config:/etc/gitlab'
+      - '/var/gitll/logs:/var/log/gitlab'
+      - '/var/gitll/data:/var/opt/gitlab'
+    networks:
+      gitlab:
+        ipv4_address: 172.30.0.2 # IP statique pour GitLab
+
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    container_name: gitlab-runner
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - '/var/gitll/gitlab-runner:/etc/gitlab-runner'
+    networks:
+      gitlab:
+        ipv4_address: 172.30.0.3 # IP statique pour le runner
+    extra_hosts:
+      # Doit pointer vers l'IP du conteneur GitLab (web)
+      - "gitlab.sam.com:172.30.0.2"
+
+  postgres:
+    image: postgres:16
+    container_name: keycloak_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      gitlab:
+        ipv4_address: 172.30.0.4
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1
+    container_name: keycloak
+    restart: unless-stopped
+    command: start-dev # start-dev : mode développement, sans TLS. Pour la prod, passe à start et configure un reverse proxy (Traefik, Nginx) avec HTTPS
+    environment:
+      # Base de données
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: changeme
+
+      # Admin initial
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: changeme
+
+      # Hostname (adapter selon ton contexte)
+      KC_HOSTNAME: keycloak.sam.com
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+
+      # HTTP
+      KC_HTTP_ENABLED: true
+      KC_HTTP_PORT: 8080
+
+      # Logs
+      KC_LOG_LEVEL: INFO
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      gitlab:
+        ipv4_address: 172.30.0.5
+
+volumes:
+  postgres_data:
+
+networks:
+  gitlab:
+    name: gitlab-network
+    driver: bridge
+    ipam: # IP Address Management
+      config:
+        - subnet: 172.30.0.0/16 # Plage d'IP pour le réseau
+          gateway: 172.30.0.1
