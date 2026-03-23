@@ -2,11 +2,11 @@
 - name: Check if k3s is already installed
   stat:
     path: /usr/local/bin/k3s
-  register: k3s_binary
+  register: master_cluster_k3s_binary
 
-- name: install k3s
-  shell: curl -sfL https://get.k3s.io | sh -s - server --node-ip {{ ansible_default_ipv4.address }} --bind-address {{ ansible_default_ipv4.address }} --advertise-address {{ ansible_default_ipv4.address }}
-  when: k3s_binary.stat.exists is false
+- name: Install k3s
+  shell: set -o pipefail && curl -sfL https://get.k3s.io | sh -s - server --node-ip {{ ansible_default_ipv4.address }} --bind-address {{ ansible_default_ipv4.address }} --advertise-address {{ ansible_default_ipv4.address }}
+  when: master_cluster_k3s_binary.stat.exists is false
 
 - name: Set k3s.yaml permissions
   file:
@@ -14,13 +14,13 @@
     mode: "0777"
 
 - name: Read k3s node token
-  slurp:
+  ansible.builtin.slurp:
     src: /var/lib/rancher/k3s/server/node-token
-  register: k3s_token_raw
+  register: master_cluster_k3s_slurp_token
 
 - name: Set k3s token as host fact
-  set_fact:
+  ansible.builtin.set_fact:
     # slurp retourne le contenu du fichier encodé en base64 dans .content slurp` pour garantir un transport JSON valide quel que soit le contenu du fichier.
     # b64decode : décode le base64 pour obtenir le token en clair
     # trim : supprime le \n final présent dans le fichier node-token
-    k3s_token: "{{ k3s_token_raw.content | b64decode | trim }}"
+    master_cluster_k3s_token: "{{ master_cluster_k3s_slurp_token.content | b64decode | trim }}"

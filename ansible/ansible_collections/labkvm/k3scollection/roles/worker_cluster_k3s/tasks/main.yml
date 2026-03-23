@@ -1,7 +1,7 @@
 ---
 - name: Apt update
   ansible.builtin.import_tasks: apt.yml
-  when: apt_update_enabled
+  when: worker_cluster_k3s_apt_update_enabled
 
 - name: Workers configure
   ansible.builtin.import_tasks: workers.yml

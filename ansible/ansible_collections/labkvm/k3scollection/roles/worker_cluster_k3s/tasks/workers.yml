@@ -1,14 +1,17 @@
 ---
 - name: Check if k3s agent is already installed
-  stat:
+  ansible.builtin.stat:
     path: /usr/local/bin/k3s
-  register: k3s_binary
+  register: worker_cluster_k3s_binary
 
 - name: Join k3s cluster as agent
-  shell: >
-    curl -sfL https://get.k3s.io |
-    K3S_TOKEN="{{ hostvars[groups['masters'][0]]['k3s_token'] }}"
-    sh -s - agent
-    --server https://{{ hostvars[groups['masters'][0]]['ansible_default_ipv4']['address'] }}:6443
-    --node-ip {{ ansible_default_ipv4.address }}
-  when: k3s_binary.stat.exists is false
+  ansible.builtin.shell:
+    cmd: >
+      set -o pipefail &&
+      curl -sfL https://get.k3s.io |
+      K3S_TOKEN="{{ hostvars[groups['masters'][0]]['k3s_token'] }}"
+      sh -s - agent
+      --server https://{{ hostvars[groups['masters'][0]]['ansible_default_ipv4']['address'] }}:6443
+      --node-ip {{ ansible_default_ipv4.address }}
+    executable: /bin/bash
+  when: worker_cluster_k3s_binary.stat.exists is false

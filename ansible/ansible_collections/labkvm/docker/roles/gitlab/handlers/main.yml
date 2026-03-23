@@ -1,8 +1,8 @@
-- name: run docker compose
+- name: Run docker compose
   ansible.builtin.shell:
     cmd: sudo docker compose up -d --remove-orphans --pull always
     chdir: /var/gitll
   changed_when: true
-# changed_when: true est le bon choix parce que c'est un handler — il ne se déclenche que si le template .j2 a changé. Donc quand il tourne,
-# c'est qu'il y a effectivement eu un changement. Autant l'assumer clairement plutôt que de laisser Ansible afficher un comportement ambigu.
-# par defaut  ansible.builtin.command marque toujours la tâche comme changed (jaune),
+  # changed_when: true est le bon choix parce que c'est un handler — il ne se déclenche que si le template .j2 a changé. Donc quand il tourne,
+  # c'est qu'il y a effectivement eu un changement. Autant l'assumer clairement plutôt que de laisser Ansible afficher un comportement ambigu.
+  # par defaut  ansible.builtin.command marque toujours la tâche comme changed (jaune),

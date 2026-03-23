@@ -7,4 +7,6 @@ authors:
 description: Collection pour les déploiements DOCKER
 license:
   - GPL-3.0-or-later
-requires_ansible: ">=2.15.0"
+tags:
+  - infrastructure
+repository: https://github.com/samderkaoui/LAB_KVM

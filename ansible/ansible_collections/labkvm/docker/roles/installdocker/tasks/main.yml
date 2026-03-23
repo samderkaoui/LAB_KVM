@@ -1,5 +1,6 @@
 - name: Installer Docker via le script officiel
   ansible.builtin.shell:
-    cmd: curl -fsSL https://get.docker.com | sh
+    cmd: set -o pipefail && curl -fsSL https://get.docker.com | sh # Avec `pipefail` : si **n'importe quelle** commande dans le pipe échoue, la commande entière échoue → Ansible détecte l'erreur
+    executable: /bin/bash
   args:
     creates: /usr/bin/docker
