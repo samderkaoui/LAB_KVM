@@ -196,7 +196,7 @@ sudo docker exec -ti gitlab-runner gitlab-runner register  --url https://gitlab.
 # /var/gitll/gitlab-runner/config.toml sous [runners.docker] # ip du traefik
 extra_hosts = ["gitlab.sam.com:172.30.0.6", "keycloak.sam.com:172.30.0.6"]
 network_mode = "gitlab-network" 
-
+# si necessaire : volumes = ["/var/gitll/certs/gitkc.crt:/usr/local/share/ca-certificates/gitkc.crt"]
 ```
 
 - Faire la conf manuel keycloak ( voir doc)
