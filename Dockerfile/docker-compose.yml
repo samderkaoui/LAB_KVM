@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production # points to the final stage
+    image: my-app:latest
+    container_name: my-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+    # Optional: override the default command
+    # command: ["node", "dist/index.js"]
+
+  # ---- Dev variant (uncomment to use) ----
+  # app-dev:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: builder       # stops at the builder stage (includes devDeps)
+  #   volumes:
+  #     - .:/app              # live-reload via bind mount
+  #   command: ["npm", "run", "dev"]
+  #   ports:
+  #     - "3000:3000"

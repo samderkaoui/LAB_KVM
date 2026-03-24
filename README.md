@@ -16,6 +16,7 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 ✅ ⛔
 
 - [ ] Faire un dockerfile optimisé (multi stage etc...) et un pipeline CI avec hadolint pour le linter
+- [ ] Faire docker pour installer vault hashicorp 
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
 - [ ] Importer chart longhorn pour le stockage

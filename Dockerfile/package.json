@@ -1,0 +1,9 @@
+{
+  "name": "docker-example",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cp -r src dist",
+    "dev": "node src/index.js",
+    "start": "node dist/index.js"
+  }
+}
