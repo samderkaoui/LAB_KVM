@@ -29,3 +29,11 @@ output "vm_gitlab_name" {
 output "vm_gitlab_ip" {
   value = module.vm_gitlab.vm_ip
 }
+
+output "vm_vault_name" {
+  value = module.vm_vault.vm_name
+}
+
+output "vm_vault_ip" {
+  value = module.vm_vault.vm_ip
+}
