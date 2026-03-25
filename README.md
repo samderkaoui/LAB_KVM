@@ -187,6 +187,7 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 192.168.122.156 gitlab.sam.com
 192.168.122.156 keycloak.sam.com
+xxxxxxxxxxxxxxx   vault.sam.com
 ```
 
 ```bash
@@ -196,7 +197,7 @@ sudo docker exec -ti gitlab-runner gitlab-runner register  --url https://gitlab.
 
 # Configurer le runner pour avoir l'ip/dns de mon gitlab/keycloak via TRAEFIK (donc ip du reverse et pas des conteneurs)
 # /var/gitll/gitlab-runner/config.toml sous [runners.docker]
-extra_hosts = ["gitlab.sam.com:172.30.0.6", "keycloak.sam.com:172.30.0.6"]
+extra_hosts = ["gitlab.sam.com:172.30.0.6", "keycloak.sam.com:172.30.0.6", "vault.sam.com:IP AD DEFINIR A LA MAIN"]
 network_mode = "gitlab-network" 
 # si necessaire : volumes = ["/var/gitll/certs/gitkc.crt:/usr/local/share/ca-certificates/gitkc.crt"]
 ```

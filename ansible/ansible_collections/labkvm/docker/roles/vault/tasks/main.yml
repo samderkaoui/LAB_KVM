@@ -1,0 +1,45 @@
+- name: Create vault directory
+  ansible.builtin.file:
+    path: /var/vault
+    state: directory
+    owner: root
+    mode: "0777"
+
+- name: Create config directory
+  ansible.builtin.file:
+    path: /var/vault/config
+    state: directory
+    owner: root
+    mode: "0777"
+
+- name: Create data directory
+  ansible.builtin.file:
+    path: /var/vault/data
+    state: directory
+    owner: root
+    mode: "0777"
+
+- name: Create logs directory
+  ansible.builtin.file:
+    path: /var/vault/logs
+    state: directory
+    owner: root
+    mode: "0777"
+
+- name: Deploy vault.hcl conf
+  ansible.builtin.template:
+    src: vault.hcl.j2
+    dest: /var/vault/config/vault.hcl
+    owner: root
+    mode: "0777"
+
+- name: Deploy docker-compose.yml
+  ansible.builtin.template:
+    src: vault.yml.j2
+    dest: /var/vault/docker-compose.yml
+    owner: root
+    mode: "0777"
+  notify: Run docker compose
+
+- name: Flush handlers (run docker compose before reading password) # meta: flush_handlers` force l'exécution immédiate de tous les handlers en attente à cet endroit précis :
+  ansible.builtin.meta: flush_handlers

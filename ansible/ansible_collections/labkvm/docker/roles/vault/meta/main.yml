@@ -1,0 +1,23 @@
+---
+# collections: raccourci de nommage pour les modules utilises dans les tasks
+#   sans: community.general.ufw / avec: juste ufw
+# collections:
+#   - community.general
+#   - kubernetes.core
+
+# dependencies: roles qui s'executent AVANT ce role (pas des collections, des roles)
+dependencies:
+  - labkvm.docker.installdocker
+galaxy_info:
+  description: Install vault
+
+  company: LAB_KVM
+  license: GPL-3.0-or-later
+  author: DERKAOUI Samir
+
+  min_ansible_version: 2.15.0
+
+  platforms:
+    - name: DEB
+      versions:
+        - "13"
