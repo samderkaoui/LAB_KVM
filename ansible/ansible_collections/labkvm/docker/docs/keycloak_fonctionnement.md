@@ -37,7 +37,7 @@ Un **Client** = une application qui va s'authentifier via Keycloak.
    - **Standard flow** : `ON`
 4. Page suivante — **Valid redirect URIs** :
    ```
-   http://gitlab.sam.com/users/auth/openid_connect/callback
+   https://gitlab.sam.com/users/auth/openid_connect/callback
    ```
 5. **Save**
 
@@ -91,40 +91,37 @@ Par défaut les rôles ne sont pas inclus dans le token OIDC. Il faut ajouter un
 Modifie ton `docker-compose.yml`, section `GITLAB_OMNIBUS_CONFIG` :
 
 ```yaml
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://gitlab.sam.com'
+     GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://gitlab.sam.com'
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        nginx['proxy_set_headers'] = {
+          "X-Forwarded-Proto" => "https",
+          "X-Forwarded-Ssl" => "on"
+        }
         gitlab_rails['omniauth_enabled'] = true
         gitlab_rails['omniauth_allow_single_sign_on'] = ['openid_connect']
         gitlab_rails['omniauth_block_auto_created_users'] = false
         gitlab_rails['omniauth_auto_link_user'] = ['openid_connect']
-
         gitlab_rails['omniauth_providers'] = [
-            {
+          {
             name: 'openid_connect',
             label: 'Keycloak SSO',
             args: {
-                name: 'openid_connect',
-                scope: ['openid', 'profile', 'email', 'roles'],
-                response_type: 'code',
-                issuer: 'http://keycloak.sam.com:8080/realms/homelab',
-                client_auth_method: 'query',
-                discovery: false,    ======> j'ai mis en false car http et je dois hardcodé les urls qui sont renvoyés (jwks_uri to end_session_endpoint en HTTPS par defaut
-                uid_field: 'preferred_username',
-                jwks_uri: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/certs',
-                authorization_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/auth',
-                token_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/token',
-                userinfo_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/userinfo',
-                end_session_endpoint: 'http://keycloak.sam.com:8080/realms/homelab/protocol/openid-connect/logout',
-                client_options: {
+              name: 'openid_connect',
+              scope: ['openid', 'profile', 'email', 'roles'],
+              response_type: 'code',
+              issuer: 'https://keycloak.sam.com/realms/homelab',
+              client_auth_method: 'query',
+              discovery: true,
+              uid_field: 'preferred_username',
+              client_options: {
                 identifier: 'gitlab',
-                secret: 'EBubHamGidRHkO08YBpsltm1MAYhbRkH',
-                redirect_uri: 'http://gitlab.sam.com/users/auth/openid_connect/callback',
-                scheme: 'http', ======> je force le HTTP
-                host: 'keycloak.sam.com' ======> Sans discovery, GitLab ne sait plus quel host appeler pour les échanges de tokens — il faut le lui dire explicitement.
-                port: 8080 ======> le port (comme ca explicite et pas directe 443
-                }
+                secret: 'xxxxx',
+                redirect_uri: 'https://gitlab.sam.com/users/auth/openid_connect/callback'
+              }
             }
-            }
+          }
         ]
 ```
 

@@ -166,10 +166,10 @@ make ansible
 ### Étape 5 : Configuration Manuel Gitlab / keycloak (pas d'overengineering :) )
 
 ```bash
-virsh edit gitlab (nom de la vm)
+sudo virsh edit gitlab (nom de la vm)
 
 # expose directement les instructions CPU de l'hôte à la VM,nécessaire pour que Keycloak (ou d'autres apps) puissent utiliser les extensions CPU avancées 
-<cpu mode='host-passthrough' check='none'/>
+<cpu mode='host-passthrough' check='none'/>  # (ne pas mettre /cpu a la fin car j'ai /)
 
 # Le reboot semble ne pas suffir
 sudo virsh destroy gitlab
