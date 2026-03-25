@@ -33,6 +33,13 @@
     owner: root
     mode: "0777"
 
+- name: Deploy init script
+  ansible.builtin.template:
+    src: init-vault.sh.j2
+    dest: /var/vault/init-vault.sh
+    owner: root
+    mode: "0777"
+
 - name: Deploy docker-compose.yml
   ansible.builtin.template:
     src: vault.yml.j2

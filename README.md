@@ -202,11 +202,16 @@ network_mode = "gitlab-network"
 # si necessaire : volumes = ["/var/gitll/certs/gitkc.crt:/usr/local/share/ca-certificates/gitkc.crt"]
 ```
 
-- Faire la conf manuel keycloak (voir doc)
+- Faire la conf manuel keycloak (voir doc ansible_collections/labkvm/docker/docs/keycloak_fonctionnement.md)
 - maj du token dans le docker-compose
 - rm -f gitlab-ce
 - docker compose up -d
 
+
+```bash
+# Installer / unseal vault
+bash /var/vault/init-vault.sh
+```
 
 
 ### Étape 6 : Nettoyage (si nécessaire)

@@ -7,7 +7,7 @@ storage "raft" {
 
 # ── Listener ───────────────────────────────────────────────────────────────────
 listener "tcp" {
-  address       = "0.0.0.0:8200"
+  address         = "0.0.0.0:8200"
   cluster_address = "0.0.0.0:8201"
 
   # TLS désactivé pour démarrer (homelab).
@@ -22,8 +22,8 @@ ui = true
 cluster_name = "vault-homelab"
 
 # ── API & Cluster addr ─────────────────────────────────────────────────────────
-api_addr     = "http://0.0.0.0:8200"
-cluster_addr = "http://0.0.0.0:8201"
+api_addr     = "http://{{ ansible_default_ipv4.address }}:8200"
+cluster_addr = "https://{{ ansible_default_ipv4.address }}:8201"
 
 # ── Logs ───────────────────────────────────────────────────────────────────────
 log_level  = "info"
