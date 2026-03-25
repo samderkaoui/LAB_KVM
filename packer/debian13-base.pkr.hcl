@@ -26,10 +26,10 @@ source "qemu" "debian13" {
   iso_url          = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.4.0-amd64-netinst.iso"
   iso_checksum     = var.iso_checksum
   output_directory = "output"
-  disk_size        = "20G"
+  disk_size        = "80G"
   format           = "qcow2"
-  memory           = 4096
-  cpus             = 4
+  memory           = 8192
+  cpus             = 8
   accelerator      = "kvm"
   disk_interface    = "virtio"
   net_device        = "virtio-net"
