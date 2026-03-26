@@ -15,9 +15,8 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 ## To DO
 ✅ ⛔
 
-- [ ] Cree une VM en plus pour vault / Finir de tester le dockercompose ( ne pas utiliser les script auto , trop d overengineering) / Puis faire l'install avec ansible (new role) comme gitlab (avec traefik et HTTPS aussi :) )
-- [ ] Refaire image packer avec 40 gb de disque ( 20 trop light)
-- [ ] Refaire les vm , install gitlab / keycloack etc...
+
+### HELM / K8S ( standby )
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
 - [ ] Importer chart longhorn pour le stockage
