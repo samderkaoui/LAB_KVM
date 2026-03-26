@@ -114,8 +114,10 @@ make ansible           # Exécute le playbook Ansible pour configurer les hôtes
 ```bash
 make ansible-lint-install  # Installe ansible-lint dans le venv (.venv/ansible-lint)
 make tflint-install        # Installe tflint (détecte automatiquement la dernière version)
+make tfsec-install         # Installe tfsec (détecte automatiquement la dernière version)
 make ansible-lint          # Lint le répertoire ansible/
 make terraform-lint        # Lint le répertoire terraform/
+make tfsec                 # Analyse de sécurité du répertoire terraform/
 ```
 
 ## Workflow complet

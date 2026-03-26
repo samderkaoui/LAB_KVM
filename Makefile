@@ -1,4 +1,4 @@
-.PHONY: help prerequis vm-ips logs-qemu terraform-fmt terraform-validate terraform-init terraform-apply terraform-destroy packer-init packer-build sha256 packer-destroy ansible ansible-lint-install tflint-install ansible-lint terraform-lint
+.PHONY: help prerequis vm-ips logs-qemu terraform-fmt terraform-validate terraform-init terraform-apply terraform-destroy packer-init packer-build sha256 packer-destroy ansible ansible-lint-install tflint-install ansible-lint terraform-lint tfsec-install tfsec
 # .PHONY` dit à Make que ces cibles **ne sont pas des fichiers**.
 default: help
 
@@ -143,3 +143,20 @@ ansible-lint:	## Lint ansible directory
 terraform-lint:	## Lint terraform directory
 	@$(call green, "Linting Terraform")
 	cd $(TERRAFORM_DIR) && tflint --init && tflint --recursive
+
+tfsec-install:	## Install tfsec
+	@$(call cyan, "Install tfsec")
+	@TFSEC_VERSION=$$(curl -s https://api.github.com/repos/aquasecurity/tfsec/releases/latest | grep tag_name | cut -d '"' -f 4); \
+	if [ -z "$$TFSEC_VERSION" ]; then \
+		echo "Pas d'accès à GitHub → utilisation d'une version connue stable"; \
+		TFSEC_VERSION="v1.28.11"; \
+	fi; \
+	echo "Version tfsec détectée/forcée : $$TFSEC_VERSION"; \
+	sudo curl -L https://github.com/aquasecurity/tfsec/releases/download/$${TFSEC_VERSION}/tfsec-linux-amd64 \
+		-o /usr/local/bin/tfsec; \
+	sudo chmod +x /usr/local/bin/tfsec; \
+	echo "tfsec installé avec succès !"
+
+tfsec:		## Security scan terraform directory
+	@$(call red, "tfsec security scan")
+	tfsec $(TERRAFORM_DIR)
