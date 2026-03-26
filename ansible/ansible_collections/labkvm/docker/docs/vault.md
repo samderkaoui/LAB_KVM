@@ -1,0 +1,1 @@
+- Utiliser le fichier .sh dans /var/vault pour init/unseal le vault
