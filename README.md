@@ -17,7 +17,6 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ### Vault
 
-- [ ] Mettre en place OIDC sur vault (via Keycloak)
 
 ### HELM / K8S ( standby )
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
