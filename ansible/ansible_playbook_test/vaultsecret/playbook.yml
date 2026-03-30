@@ -1,0 +1,24 @@
+---
+- name: Récupération d'un secret depuis Vault
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+    - vault_secrets.yml
+
+  vars:
+    vault_addr: "http://vault.sam.com:8200"
+
+  tasks:
+    - name: Récupérer le secret depuis Vault
+      ansible.builtin.set_fact:
+        mon_secret: "{{ lookup('community.hashi_vault.vault_kv2_get',
+          'monapp/config',
+          engine_mount_point='secret',
+          url=vault_addr,
+          token=vault_token) }}"
+      no_log: true
+
+    - name: Afficher la valeur (debug)
+      ansible.builtin.debug:
+        msg: "Le mot de passe DB est : {{ mon_secret.secret.db_password }}"
