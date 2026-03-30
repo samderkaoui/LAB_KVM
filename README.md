@@ -213,7 +213,7 @@ network_mode = "gitlab-network"
 
 
 ```bash
-# Installer / unseal vault
+# Installer / unseal vault et voir doc  ansible_collections/labkvm/docker/docs/vault
 bash /var/vault/init-vault.sh
 ```
 
