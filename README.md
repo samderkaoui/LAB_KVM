@@ -17,14 +17,19 @@ Ce projet permet de créer et gérer des machines virtuelles KVM avec une approc
 
 ### Vault
 
-
 ### HELM / K8S ( standby )
 - [ ] retirer taint k3s master = kubectl taint nodes xxxxxx node-role.kubernetes.io/control-plane:NoSchedule-
 - [ ] Deployer metrics server " kubectl apply -f /vagrant/manifests/metrics-server.yaml "
 - [ ] Importer chart longhorn pour le stockage
-- [ ] Importer premier chart helm argocd pour configurer argo
+- [ ] Importer VSO ( Vault secret opérator) et faire les premiers secret sur cluster k8s
 - [ ] Importer chart kube-prom-stack pour l'obs
 - [ ] KubeadmVagrant/install/todo_manual.sh => METALLB / API GATEWAY / CERT MANAGER / etc...
+
+
+
+- [ ] Importer premier chart helm argocd pour configurer argo
+
+
 
 ## Prérequis
 
