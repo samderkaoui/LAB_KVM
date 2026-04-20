@@ -37,3 +37,11 @@ output "vm_vault_name" {
 output "vm_vault_ip" {
   value = module.vm_vault.vm_ip
 }
+
+output "vm_datadog_name" {
+  value = module.vm_datadog.vm_name
+}
+
+output "vm_datadog_ip" {
+  value = module.vm_datadog.vm_ip
+}

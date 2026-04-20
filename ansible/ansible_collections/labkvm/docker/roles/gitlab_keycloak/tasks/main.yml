@@ -69,7 +69,9 @@
   ansible.builtin.slurp:
     src: /var/gitll/config/initial_root_password
   register: gitlab_initial_password
+  ignore_errors: true
 
 - name: Display initial root password
   ansible.builtin.debug:
     msg: "{{ gitlab_initial_password.content | b64decode | trim }}"
+  ignore_errors: true

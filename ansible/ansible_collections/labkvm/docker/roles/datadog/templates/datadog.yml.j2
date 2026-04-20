@@ -1,0 +1,64 @@
+services:
+
+  # ──────────────────────────────────────────────
+  # Service monitoré : nginx
+  # ──────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - /var/datadog/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    labels:
+      com.datadoghq.ad.check_names: '["nginx"]'
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%/nginx_status"}]'
+    networks:
+      datadog:
+        ipv4_address: 172.31.0.2
+
+  # ──────────────────────────────────────────────
+  # Agent Datadog
+  # ──────────────────────────────────────────────
+  datadog-agent:
+    image: datadog/agent:latest
+    container_name: datadog-agent
+    restart: unless-stopped
+    environment:
+      # Clé API Datadog (créée dans l'UI : Organization Settings > API Keys)
+      DD_API_KEY: "{{ datadog_api_key }}"
+      # Site Datadog (datadoghq.com pour l'EU/US gratuit)
+      DD_SITE: "{{ datadog_site }}"
+      # Tags globaux appliqués à toutes les métriques
+      DD_TAGS: "{{ datadog_tags | join(' ') }}"
+      # Collecte des logs de tous les containers Docker
+      DD_LOGS_ENABLED: "true"
+      DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
+      # Métriques des containers Docker via le socket
+      DD_CONTAINER_EXCLUDE: "name:datadog-agent"
+      # Autodiscovery Docker activé
+      DD_DOGSTATSD_NON_LOCAL_TRAFFIC: "true"
+    volumes:
+      # Socket Docker : permet à l'agent de lister et monitorer les containers
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Métriques système de l'hôte
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      # Config checks custom (ex: nginx check manuel en backup de l'autodiscovery)
+      - /var/datadog/agent/conf.d:/etc/datadog-agent/conf.d:ro
+    depends_on:
+      - nginx
+    networks:
+      datadog:
+        ipv4_address: 172.31.0.3
+
+networks:
+  datadog:
+    name: datadog-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.0.0/16
+          gateway: 172.31.0.1

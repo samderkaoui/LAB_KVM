@@ -58,8 +58,15 @@
     - labkvm.docker.gitlab_keycloak
 
 ### CONFIGURE VAULT
-- name: Configure Vault
-  hosts: vault
+# - name: Configure Vault
+#   hosts: vault
+#   become: true
+#   roles:
+#     - labkvm.docker.vault
+
+### CONFIGURE DATAGOD
+- name: Configure Datadog
+  hosts: datadog
   become: true
   roles:
-    - labkvm.docker.vault
+    - labkvm.docker.datadog

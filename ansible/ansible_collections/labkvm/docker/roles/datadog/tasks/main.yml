@@ -1,0 +1,48 @@
+---
+- name: Create datadog directory
+  ansible.builtin.file:
+    path: /var/datadog
+    state: directory
+    owner: root
+    mode: "0755"
+
+- name: Create nginx config directory
+  ansible.builtin.file:
+    path: /var/datadog/nginx
+    state: directory
+    owner: root
+    mode: "0755"
+
+- name: Create agent conf.d directory for nginx check
+  ansible.builtin.file:
+    path: /var/datadog/agent/conf.d/nginx.d
+    state: directory
+    owner: root
+    mode: "0755"
+
+- name: Deploy nginx config (active stub_status pour Datadog)
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /var/datadog/nginx/nginx.conf
+    owner: root
+    mode: "0644"
+  notify: Run docker compose
+
+- name: Deploy nginx check config (backup autodiscovery)
+  ansible.builtin.template:
+    src: nginx_check.yaml.j2
+    dest: /var/datadog/agent/conf.d/nginx.d/conf.yaml
+    owner: root
+    mode: "0644"
+  notify: Run docker compose
+
+- name: Deploy docker-compose.yml
+  ansible.builtin.template:
+    src: datadog.yml.j2
+    dest: /var/datadog/docker-compose.yml
+    owner: root
+    mode: "0644"
+  notify: Run docker compose
+
+- name: Flush handlers (démarre les containers immédiatement)
+  ansible.builtin.meta: flush_handlers

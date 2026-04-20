@@ -1,0 +1,5 @@
+- name: Run docker compose
+  ansible.builtin.shell:
+    cmd: sudo docker compose up -d --remove-orphans --pull always
+    chdir: /var/datadog
+  changed_when: true

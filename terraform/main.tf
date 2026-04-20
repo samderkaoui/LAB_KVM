@@ -1,3 +1,16 @@
+module "vm_datadog" {
+  source     = "./modules/vm_k3s"
+  vm_name    = "datadog"
+  base_image = var.base_image
+  memory     = 2048
+  vcpu       = 2
+  # Old way
+  # playbook        = "../ansible/set_hostname.yml"
+  # ansible_user    = "lab"
+  # ssh_private_key = "../packer/default_id_ed25519"
+}
+
+
 module "vm_vault" {
   source     = "./modules/vm_k3s"
   vm_name    = "vault"
