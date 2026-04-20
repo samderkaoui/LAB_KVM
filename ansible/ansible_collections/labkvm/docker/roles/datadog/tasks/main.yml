@@ -37,8 +37,8 @@
     mode: "0755"
 
 - name: Deploy nginx config (active stub_status pour Datadog)
-  ansible.builtin.template:
-    src: nginx.conf.j2
+  ansible.builtin.copy:
+    src: nginx.conf
     dest: /var/datadog/nginx/nginx.conf
     owner: root
     mode: "0644"

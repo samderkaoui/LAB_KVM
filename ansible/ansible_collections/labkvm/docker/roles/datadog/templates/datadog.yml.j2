@@ -15,9 +15,6 @@ services:
       com.datadoghq.ad.check_names: '["nginx"]'
       com.datadoghq.ad.init_configs: '[{}]'
       com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%/nginx_status"}]'
-    networks:
-      datadog:
-        ipv4_address: 172.31.0.2
 
   # ──────────────────────────────────────────────
   # Agent Datadog
@@ -70,15 +67,3 @@ services:
       - /var/datadog/agent/conf.d:/etc/datadog-agent/conf.d:ro
     depends_on:
       - nginx
-    networks:
-      datadog:
-        ipv4_address: 172.31.0.3
-
-networks:
-  datadog:
-    name: datadog-network
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.31.0.0/16
-          gateway: 172.31.0.1
