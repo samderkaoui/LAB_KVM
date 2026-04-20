@@ -1,10 +1,9 @@
 ---
-datadog_api_key: "CHANGE_ME"
-datadog_site: "datadoghq.com"
+datadog_api_key: "eca6295fffd1de164a632cd2e0b88bc3"
+datadog_site: "datadoghq.eu"
 
 # Tags appliqués à toutes les métriques envoyées à Datadog
 datadog_tags:
-  - "env:lab"
   - "project:labkvm"
   - "role:monitoring"
   - "owner:samir"

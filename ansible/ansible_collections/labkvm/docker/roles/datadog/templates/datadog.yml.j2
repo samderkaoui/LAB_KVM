@@ -23,30 +23,50 @@ services:
   # Agent Datadog
   # ──────────────────────────────────────────────
   datadog-agent:
-    image: datadog/agent:latest
-    container_name: datadog-agent
+    image: registry.datadoghq.com/agent:7
+    container_name: dd-agent
     restart: unless-stopped
+    # Accès au namespace PID de l'hôte : CPU, mémoire, réseau, disque de la VM
+    pid: host
     environment:
-      # Clé API Datadog (créée dans l'UI : Organization Settings > API Keys)
       DD_API_KEY: "{{ datadog_api_key }}"
-      # Site Datadog (datadoghq.com pour l'EU/US gratuit)
       DD_SITE: "{{ datadog_site }}"
-      # Tags globaux appliqués à toutes les métriques
       DD_TAGS: "{{ datadog_tags | join(' ') }}"
-      # Collecte des logs de tous les containers Docker
+      DD_ENV: dev
+      # Hostname de la VM (sans ça l'agent prend le nom du container)
+      DD_HOSTNAME: "{{ ansible_hostname }}"
+
+      # ── APM ──────────────────────────────────────
+      DD_APM_ENABLED: "true"
+      DD_APM_NON_LOCAL_TRAFFIC: "true"
+      # Socket Unix pour APM (plus performant que TCP)
+      DD_APM_RECEIVER_SOCKET: /var/run/datadog/apm.socket
+
+      # ── DogStatsD ─────────────────────────────────
+      DD_DOGSTATSD_NON_LOCAL_TRAFFIC: "true"
+      DD_DOGSTATSD_SOCKET: /var/run/datadog/dsd.socket
+
+      # ── Logs ──────────────────────────────────────
       DD_LOGS_ENABLED: "true"
       DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL: "true"
-      # Métriques des containers Docker via le socket
-      DD_CONTAINER_EXCLUDE: "name:datadog-agent"
-      # Autodiscovery Docker activé
-      DD_DOGSTATSD_NON_LOCAL_TRAFFIC: "true"
+      DD_LOGS_CONFIG_AUTO_MULTI_LINE_DETECTION: "true"
+      DD_CONTAINER_EXCLUDE_LOGS: "name:dd-agent"
     volumes:
-      # Socket Docker : permet à l'agent de lister et monitorer les containers
+      # Hostname de la VM
+      - /etc/hostname:/etc/hostname:ro
+      # Socket Docker : autodiscovery + métriques containers
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Sockets APM et DogStatsD partagés avec les applis
+      - /var/run/datadog:/var/run/datadog
+      # Logs containers bruts
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      # Fichiers de position des logs (reprise après redémarrage)
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
       # Métriques système de l'hôte
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
-      # Config checks custom (ex: nginx check manuel en backup de l'autodiscovery)
+      - /run/containerd:/run/containerd:ro
+      # Checks custom (nginx en backup de l'autodiscovery)
       - /var/datadog/agent/conf.d:/etc/datadog-agent/conf.d:ro
     depends_on:
       - nginx

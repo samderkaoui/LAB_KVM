@@ -6,6 +6,22 @@
     owner: root
     mode: "0755"
 
+# Partagé entre dd-agent et les applis instrumentées (APM + DogStatsD via Unix socket)
+- name: Create /var/run/datadog (sockets APM et DogStatsD)
+  ansible.builtin.file:
+    path: /var/run/datadog
+    state: directory
+    owner: root
+    mode: "0777"
+
+# Permet à l'agent de reprendre la lecture des logs au bon endroit après redémarrage
+- name: Create /opt/datadog-agent/run (position fichiers logs)
+  ansible.builtin.file:
+    path: /opt/datadog-agent/run
+    state: directory
+    owner: root
+    mode: "0755"
+
 - name: Create nginx config directory
   ansible.builtin.file:
     path: /var/datadog/nginx
